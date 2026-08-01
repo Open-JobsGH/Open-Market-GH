@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open Market | Terms & Conditions</title>
+    <link rel="icon" type="image/x-icon" href="icons and images/Open Favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script>
+        if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark-theme');
+    </script>
+    <style>
+        :root {
+            --purple-main: #500e8c;
+            --bg-light: #ffffff; --bg-search: #f1f2f6; --text-dark: #500e8c; --text-body: #1a1a1a;
+            --text-muted: #8e8e93; --border-card: #f2f2f7; --card-sub-bg: #ffffff;
+        }
+        .dark-theme {
+            --purple-main: #a370db;
+            --bg-light: #121212; --bg-search: #2a2a2a; --text-dark: #b689e6; --text-body: #f3f4f6;
+            --text-muted: #9ca3af; --border-card: rgba(255,255,255,0.08); --card-sub-bg: #1e1e1e;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+
+        /* ---------- Custom purple scrollbars (site-wide) ---------- */
+        * { scrollbar-width: thin; scrollbar-color: var(--purple-main) transparent; }
+        *::-webkit-scrollbar { width: 6px; height: 6px; }
+        *::-webkit-scrollbar-track { background: transparent; }
+        *::-webkit-scrollbar-thumb { background-color: var(--purple-main); border-radius: 10px; }
+        *::-webkit-scrollbar-thumb:hover { background-color: var(--purple-hover, var(--purple-main)); }
+
+        body { background-color: var(--bg-light); color: var(--text-body); min-height: 100vh; }
+        .app-container { min-height: 100vh; max-width: 480px; margin: 0 auto; padding: 20px 20px 60px; }
+        @media (min-width: 700px) {
+            .app-container { max-width: 620px; padding: 28px 32px 70px; }
+        }
+        @media (min-width: 1000px) {
+            .app-container { max-width: 760px; padding: 36px 40px 80px; }
+        }
+        @media (min-width: 1440px) {
+            .app-container { max-width: 880px; padding: 44px 40px 90px; }
+        }
+
+        .header-row { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
+        .back-btn { background: none; border: none; font-size: 20px; color: var(--purple-main); cursor: pointer; display: flex; }
+        .header-row h1 { flex: 1; text-align: center; font-size: 16px; font-weight: 700; color: var(--text-dark); margin-right: 20px; }
+
+        .brand-block { display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 26px; }
+        .brand-mark {
+            width: 64px; height: 64px; border-radius: 20px; background: var(--purple-main);
+            display: flex; align-items: center; justify-content: center; margin-bottom: 14px;
+            box-shadow: 0 8px 20px rgba(80,14,140,0.25);
+        }
+        .brand-mark i { font-size: 30px; color: #fff; }
+        .brand-block h2 { font-size: 18px; font-weight: 800; color: var(--text-body); }
+        .brand-block p { font-size: 12.5px; color: var(--text-muted); margin-top: 4px; }
+
+        .about-card {
+            background: var(--card-sub-bg); border: 1px solid var(--border-card); border-radius: 16px;
+            padding: 18px; margin-bottom: 14px;
+        }
+        .about-card h3 { font-size: 13px; font-weight: 700; color: var(--text-dark); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        .about-card h3 i { font-size: 15px; }
+        .about-card h3 .section-num { color: var(--text-muted); font-weight: 600; margin-right: 2px; }
+        .about-card p { font-size: 13px; line-height: 1.6; color: var(--text-muted); }
+        .about-card p + p { margin-top: 8px; }
+        .about-card ul { margin: 6px 0 10px 18px; padding: 0; }
+        .about-card ul:last-child { margin-bottom: 0; }
+        .about-card li { font-size: 13px; line-height: 1.7; color: var(--text-muted); }
+        .about-card strong { color: var(--text-body); }
+        .sub-label { font-size: 12px; font-weight: 700; color: var(--text-body); margin: 10px 0 2px; }
+        .sub-label:first-child { margin-top: 0; }
+        .policy-meta-card { display: flex; flex-direction: column; gap: 2px; }
+
+        .meta-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 4px; font-size: 12.5px; }
+        .meta-row:not(:last-child) { border-bottom: 1px solid var(--border-card); }
+        .meta-row span:first-child { color: var(--text-muted); }
+        .meta-row span:last-child { color: var(--text-body); font-weight: 600; }
+
+        .footer-note { text-align: center; font-size: 11.5px; color: var(--text-muted); margin-top: 24px; line-height: 1.6; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="header-row">
+        <button class="back-btn" onclick="window.location.href='settings.html'"><i class="ph ph-caret-left"></i></button>
+        <h1>Terms &amp; Conditions</h1>
+    </div>
+
+    <div class="about-card policy-meta-card">
+        <div class="meta-row"><span>Effective Date</span><span>To be announced at launch</span></div>
+        <div class="meta-row"><span>Last Updated</span><span>To be announced at launch</span></div>
+    </div>
+
+    <div class="about-card">
+        <h3><i class="ph ph-hand-waving"></i> <span class="section-num">1.</span> Introduction</h3>
+        <p>Welcome to Open Market. These Terms &amp; Conditions ("Terms") govern your access to and use of the Open Market website, mobile applications (if available), and all related services (collectively referred to as the "Platform").</p>
+        <p>By creating an account, browsing the Platform, placing an order, or otherwise using any Open Market service, you acknowledge that you have read, understood, and agree to be legally bound by these Terms &amp; Conditions, our Privacy Policy, and any additional policies published on the Platform.</p>
+        <p>If you do not agree with any part of these Terms, you must not use the Platform.</p>
+    </div>
+
+    <div class="about-card">
+        <h3><i class="ph ph-storefront"></i> <span class="section-num">2.</span> About Open Market</h3>
+        <p>Open Market is a Direct-to-Consumer (D2C) e-commerce platform operating in Ghana. Unlike traditional online marketplaces, Open Market is the seller of all products displayed on the Platform. Customers purchase products directly from Open Market.</p>
+        <p>Open Market carefully selects products from trusted manufacturers, distributors, suppliers and local retail partners. Regardless of the original source of a product, every purchase made through the Platform is a transaction between the customer and Open Market.</p>
+        <p>Open Market does not operate as a peer-to-peer marketplace and does not permit members of the public to independently list or sell products through customer accounts.</p>
+        <p>Businesses interested in supplying products to Open Market may apply through the <strong>Become a Member</strong> option available within the Support Center. Acceptance into the supplier programme is entirely at Open Market's discretion.</p>
+    </div>
+
+    <div class="about-card">
+        <h3><i class="ph ph-book-open-text"></i> <span class="section-num">3.</span> Definitions</h3>
+        <p>For the purpose of these Terms:</p>
+        <p><strong>"Open Market"</strong>, <strong>"we"</strong>, <strong>"our"</strong>, or <strong>"us"</strong> refers to the owner and operator of the Open Market Platform.</p>
+        <p><strong>"Customer"</strong>, <strong>"User"</strong>, or <strong>"You"</strong> refers to any individual or organisation accessing or using the Platform.</p>
+        <p><strong>"Platform"</strong> means the Open Market website, applications, services and related systems.</p>
+        <p><strong>"Order"</strong> means a request submitted by a customer to purchase one or more products from Open Market.</p>
+        <p><strong>"Order ID"</strong> means the unique reference number assigned to each completed order.</p>
+        <p><strong>"Self Pickup"</strong> means collecting purchased goods from an officially designated Open Market pickup location.</p>
+        <p><strong>"Home Delivery"</strong> means delivery of purchased goods to the address supplied during checkout.</p>
+        <p><strong>"Product"</strong> means any physical item offered for sale through Open Market.</p>
+        <p><strong>"Account"</strong> means a registered Open Market customer account.</p>
+    </div>
+
+    <div class="about-card">
+        <h3><i class="ph ph-identification-card"></i> <span class="section-num">4.</span> Eligibility</h3>
+        <p>To use Open Market, you must be capable of entering into a legally binding agreement under the laws of Ghana, provide accurate and truthful information during registration, keep your account information up to date, and maintain the confidentiality of your account credentials.</p>
+        <p>Open Market reserves the right to suspend or terminate any account that provides false information or violates these Terms.</p>
+    </div>
+
+    <div class="about-card">
+        <h3><i class="ph ph-user-circle"></i> <span class="section-num">5.</span> Customer Accounts</h3>
+        <p>Customers are responsible for maintaining the confidentiality of their account credentials. You are responsible for all activities carried out under your account unless unauthorised access has been reported to Open Market without unreasonable delay.</p>
+        <p>You agree not to create fraudulent accounts, impersonate another individual or organisation, share your account with others, use another person's account without permission, or use automated software or bots to access the Platform without written authorisation.</p>
+    </div>
+
+    <div class="about-card">
+        <h3><i class="ph ph-check-circle"></i> <span class="section-num">6.</span> Accuracy of Information</h3>
+        <p>Customers must ensure that all information submitted to Open Market is accurate, including but not limited to full name, delivery address, contact information, email address, and payment information.</p>
+        <p>Open Market shall not be responsible for delays, failed deliveries or additional costs resulting from incorrect information supplied by the customer.</p>
+    </div>
+
+    <div class="about-card">
+        <h3><i class="ph ph-at"></i> <span class="section-num">7.</span> Usernames</h3>
+        <p>Customers may change their username once every thirty (30) days.</p>
+        <p>Open Market reserves the right to refuse usernames that are offensive, misleading, impersonating another person or organisation, infringing intellectual property rights, or otherwise inappropriate for the Platform.</p>
+    </div>
+
+    <div class="about-card">
+        <h3><i class="ph ph-trash"></i> <span class="section-num">8.</span> Account Deletion</h3>
+        <p>Customers may permanently delete their account through the Settings section of the Platform. Deleting an account may permanently remove saved addresses, wishlist items, shopping history, preferences, and other account-related information.</p>
+        <p>Certain transactional records may be retained where required by applicable law, fraud prevention requirements or legitimate business purposes.</p>
+        <p>Deletion of an account does not automatically cancel existing orders. Orders that have already been placed will continue to be processed according to these Terms.</p>
+    </div>
+
+    <div class="about-card">
+        <h3><i class="ph ph-arrows-clockwise"></i> <span class="section-num">9.</span> Amendments</h3>
+        <p>Open Market may revise these Terms &amp; Conditions from time to time to reflect changes in the law, improvements to our services, operational requirements, new Platform features, and security enhancements.</p>
+        <p>Where significant changes are made, reasonable efforts will be made to notify customers through the Platform or by email. Continued use of the Platform after revised Terms become effective constitutes acceptance of the updated Terms.</p>
+    </div>
+
+    <div class="about-card">
+        <h3><i class="ph ph-package"></i> <span class="section-num">10.</span> Products</h3>
+        <p>Open Market offers a wide range of physical consumer products for purchase through the Platform. All products sold on the Platform are supplied and sold directly by Open Market.</p>
+        <p>Open Market reserves the right to add or remove products at any time, discontinue products without prior notice, limit purchase quantities where necessary, and refuse orders where fraud or misuse is suspected.</p>
+        <p>Product images are provided for illustration purposes. While every effort is made to accurately represent products, colours, packaging, dimensions and appearance may vary slightly due to photography, lighting, manufacturer updates or screen settings.</p>
+    </div>
+
+    <div class="about-card">
+        <h3><i class="ph ph-info"></i> <span class="section-num">11.</span> Product Information</h3>
+        <p>Open Market aims to ensure that all product information is accurate and up to date. Product information may include product name, description, specifications, images, available variants, stock availability, and pricing.</p>
+        <p>Although we strive for accuracy, errors may occasionally occur. If a product contains an obvious pricing error or incorrect information, Open Market reserves the right to cancel the affected order and issue a full refund where payment has already been received.</p>
+    </div>
+
+    <div class="about-card">
+        <h3><i class="ph ph-cube"></i> <span class="section-num">12.</span> Product Availability</h3>
+        <p>All products displayed on the Platform are subject to stock availability. Adding a product to your shopping cart does <strong>not</strong> reserve the item. Products remain available for purchase by other customers until an order has been successfully placed and payment has been confirmed.</p>
+        <p>If an item becomes unavailable after an order has been placed, Open Market will notify the customer and, where appropriate, offer a suitable replacement, provide store credit (where applicable), or issue a refund.</p>
+    </div>
+
+    <div class="about-card">
+        <h3><i class="ph ph-stack"></i> <span class="section-num">13.</span> Product Variants</h3>
+        <p>Some products may include selectable variants. Examples include colour, size, storage capacity, RAM, weight, volume, shoe size, and ring size.</p>
+        <p>Available variants are determined solely by Open Market. Customers may only select the variants displayed on the product page. If a product has no available variants, no variant selection options will be displayed.</p>
+        <p>Customers are responsible for carefully selecting the correct variant before completing their purchase. Open Market is not responsible for incorrect selections made by customers during checkout.</p>
+    </div>
+
+    <div class="about-card">
+        <h3><i class="ph ph-tag"></i> <span class="section-num">14.</span> Pricing</h3>
+        <p>All prices displayed on the Platform are shown in Ghana Cedis (GHS) unless otherwise stated. Prices may change without prior notice. Price changes do not affect orders that have already been successfully placed and paid for.</p>
+        <p>Applicable delivery charges will be calculated separately during checkout where Home Delivery is selected.</p>
+    </div>
+
+    <div class="about-card">
+        <h3><i class="ph ph-receipt"></i> <span class="section-num">15.</span> Taxes</h3>
+        <p>Where applicable, prices displayed on the Platform may include taxes required under the laws of Ghana. Where taxes are charged separately, they will be clearly displayed during checkout before payment is completed.</p>
+    </div>
+
+    <div class="about-card">
+        <h3><i class="ph ph-megaphone"></i> <span class="section-num">16.</span> Promotions</h3>
+        <p>Open Market may occasionally offer discounts, promotional campaigns, seasonal offers, limited-time sales, and voucher codes.</p>
+        <p>Promotions are subject to their own specific terms and may be withdrawn, modified or cancelled at any time without prior notice. Promotions may not be combined unless expressly stated.</p>
+    </div>
+
+    <div class="about-card">
+        <h3><i class="ph ph-shopping-cart"></i> <span class="section-num">17.</span> Orders</h3>
+        <p>An order is considered submitted only after checkout has been completed and payment has been successfully confirmed. Submitting an order does not guarantee acceptance.</p>
+        <p>Open Market reserves the right to refuse or cancel orders where payment cannot be verified, fraud is suspected, products become unavailable, pricing errors occur, or the customer breaches these Terms.</p>
+    </div>
+
+    <div class="about-card">
+        <h3><i class="ph ph-clipboard-text"></i> <span class="section-num">18.</span> Order Confirmation</h3>
+        <p>Once an order has been successfully placed, the customer will receive an Order ID, an order summary, and confirmation within their Open Market account.</p>
+        <p>Customers should retain their Order ID, as it may be required for customer support, delivery verification or Self Pickup collection.</p>
+    </div>
+
+    <div class="about-card">
+        <h3><i class="ph ph-credit-card"></i> <span class="section-num">19.</span> Payment</h3>
+        <p>Open Market currently requires payment <strong>before</strong> an order is processed. Payment must be successfully completed before products are reserved, orders are prepared, delivery begins, or Self Pickup becomes available.</p>
+        <p>Open Market does <strong>not</strong> offer Cash on Delivery. Failure to complete payment will result in the order not being processed.</p>
+    </div>
+
+    <div class="about-card">
+        <h3><i class="ph ph-truck"></i> <span class="section-num">20.</span> Home Delivery</h3>
+        <p>Open Market offers Home Delivery within Ghana where delivery services are available. Delivery availability may vary depending on location, and certain remote or difficult-to-access areas may not currently be serviceable. Delivery fees, where applicable, will be calculated during checkout.</p>
+        <p>Customers are responsible for ensuring that the delivery address is accurate, contact information is correct, and someone is available to receive the order.</p>
+        <p>If the customer or their authorised representative is unavailable at the time of delivery, Open Market shall not be liable for any resulting delays, failed deliveries or additional delivery attempts.</p>
+    </div>
+
+    <div class="about-card">
+        <h3><i class="ph ph-map-pin"></i> <span class="section-num">21.</span> Self Pickup</h3>
+        <p>Customers may choose Self Pickup during checkout. Where Self Pickup is selected, no delivery fee will be charged, customers must select one of the available Open Market pickup locations, and customers must present their Order ID together with the name used during checkout when collecting their order.</p>
+        <p>Open Market reserves the right to request reasonable identification before releasing an order where necessary to prevent fraud. Orders not collected within a reasonable collection period may be returned to inventory or otherwise handled in accordance with Open Market's collection policy.</p>
+    </div>
+
+    <div class="about-card">
+        <h3><i class="ph ph-x-circle"></i> <span class="section-num">22.</span> Order Cancellation</h3>
+        <p>Customers may cancel eligible orders within <strong>24 hours</strong> of placing the order. Cancellation is only permitted while the order has <strong>not yet entered processing</strong>. Once an order begins processing, packing or preparation for dispatch, it can no longer be cancelled, even if the initial 24-hour period has not yet expired.</p>
+        <p>The Platform may display a countdown timer indicating the remaining cancellation period. This timer is provided as a convenience only and does not override Open Market's right to begin processing an order before the timer expires.</p>
+        <p>Where an eligible cancellation is successfully completed before processing begins, any approved refund will be handled in accordance with the Refund Policy.</p>
+    </div>
+
+    <div class="about-card">
+        <h3><i class="ph ph-arrow-counter-clockwise"></i> <span class="section-num">23.</span> Returns</h3>
+        <p>Open Market strives to ensure that every customer receives products in good condition and as described. Customers are encouraged to inspect their order immediately upon receipt.</p>
+        <p>A return request may be submitted where the wrong product was delivered, the product arrived damaged or defective, the product significantly differs from its description, or an item is missing from the order.</p>
+        <p>Return requests must be submitted through the Open Market Support Center within the period communicated on the Platform. Open Market reserves the right to request supporting evidence, including photographs or videos, before approving a return request.</p>
+        <p>Returned products should be in their original condition wherever reasonably possible, including original packaging, accessories, manuals and any promotional items supplied with the purchase.</p>
+        <p>Open Market reserves the right to refuse returns where products show signs of misuse, intentional damage, alteration or excessive wear that is inconsistent with reasonable inspection.</p>
+    </div>
+
+    <div class="about-card">
+        <h3><i class="ph ph-money"></i> <span class="section-num">24.</span> Refunds</h3>
+        <p>Refund requests are reviewed individually. Approval of a refund is at the sole discretion of Open Market after assessing the circumstances surrounding the request.</p>
+        <p>Where a refund is approved, it will generally be processed within <strong>ten (10) working days</strong> following completion of the review process. Refunds will normally be made using the same payment method used for the original purchase unless otherwise agreed.</p>
+        <p>Delivery charges, processing fees or other service charges may not be refundable unless required by applicable law or where the error was caused by Open Market.</p>
+    </div>
+
+    <div class="about-card">
+        <h3><i class="ph ph-arrows-left-right"></i> <span class="section-num">25.</span> Exchanges</h3>
+        <p>Where stock is available, Open Market may offer an exchange instead of a refund. Exchange eligibility will depend on product availability, product condition, nature of the issue, and applicable consumer protection laws.</p>
+        <p>Open Market reserves the right to determine whether an exchange or refund is the most appropriate resolution.</p>
+    </div>
+
+    <div class="about-card">
+        <h3><i class="ph ph-certificate"></i> <span class="section-num">26.</span> Warranties</h3>
+        <p>Certain products may include a manufacturer's warranty or supplier warranty. Warranty coverage, duration and conditions vary depending on the product, and warranty information, where applicable, will be provided on the product page or with the product documentation.</p>
+        <p>Open Market does not extend warranties beyond those expressly offered by the manufacturer or supplier unless otherwise stated. Damage resulting from misuse, accidents, improper installation, neglect, unauthorised repairs or normal wear and tear is generally not covered by warranty.</p>
+    </div>
+
+    <div class="about-card">
+        <h3><i class="ph ph-user-check"></i> <span class="section-num">27.</span> Customer Responsibilities</h3>
+        <p>Customers agree to provide accurate information, select the correct product and product variants before purchasing, carefully review orders before completing checkout, keep account credentials secure, comply with all applicable laws, cooperate during delivery or Self Pickup, and promptly report any problems relating to an order.</p>
+        <p>Customers are responsible for ensuring that the delivery address supplied during checkout is correct. Once an order has entered processing, delivery addresses generally cannot be changed.</p>
+    </div>
+
+    <div class="about-card">
+        <h3><i class="ph ph-warning"></i> <span class="section-num">28.</span> Product Availability After Purchase</h3>
+        <p>Occasionally, unexpected inventory discrepancies may occur. If a purchased product becomes unavailable before dispatch, Open Market may contact the customer regarding a suitable replacement, offer store credit where applicable, or issue a full refund.</p>
+        <p>Open Market shall not be liable for losses arising from temporary stock shortages or discontinued products.</p>
+    </div>
+
+    <div class="about-card">
+        <h3><i class="ph ph-star"></i> <span class="section-num">29.</span> Product Reviews</h3>
+        <p>Where customer reviews are available, customers agree to submit honest and respectful feedback. Reviews must not contain offensive language, include false or misleading information, promote unrelated businesses, contain spam, or violate another person's rights.</p>
+        <p>Open Market reserves the right to remove reviews that violate these Terms.</p>
+    </div>
+
+    <div class="about-card">
+        <h3><i class="ph ph-headset"></i> <span class="section-num">30.</span> Customer Support</h3>
+        <p>Customers may contact Open Market through the Support Center regarding orders, delivery, refunds, technical issues, product enquiries, account issues, and customer service complaints.</p>
+        <p>Open Market aims to respond within a reasonable timeframe but does not guarantee response times. Submitting multiple requests relating to the same issue may delay resolution.</p>
+    </div>
+
+    <div class="about-card">
+        <h3><i class="ph ph-prohibit"></i> <span class="section-num">31.</span> Prohibited Conduct</h3>
+        <p>Users must not use the Platform to commit fraud, provide false information, attempt unauthorised access to the Platform, upload malicious software or code, interfere with Platform operations, circumvent security measures, abuse customer support staff, violate applicable laws, or use automated bots or scripts without permission.</p>
+        <p>Open Market reserves the right to suspend or permanently terminate accounts engaged in prohibited activities.</p>
+    </div>
+
+    <div class="about-card">
+        <h3><i class="ph ph-warning-octagon"></i> <span class="section-num">32.</span> Prohibited Products</h3>
+        <p>Open Market reserves the right to determine which products may be listed and sold on the Platform. Without limitation, the Platform does not permit the sale of products prohibited by applicable law or products that conflict with Open Market's business policies.</p>
+        <p>Examples include, but are not limited to: illegal drugs and narcotics; weapons, firearms, ammunition and explosives; counterfeit goods; stolen property; dangerous chemicals without lawful authorisation; tobacco products where prohibited by company policy; shisha and related smoking products; illegal surveillance equipment; and products that promote violence, hatred or criminal activity.</p>
+        <p>Open Market may update this list at any time.</p>
+    </div>
+
+    <div class="about-card">
+        <h3><i class="ph ph-copyright"></i> <span class="section-num">33.</span> Intellectual Property</h3>
+        <p>All content available on the Platform, including but not limited to logos, trademarks, product photography, icons, graphics, text, software, layouts, designs and databases, is owned by or licensed to Open Market unless otherwise stated.</p>
+        <p>Nothing contained on the Platform grants users any ownership rights over Open Market intellectual property. Users may not reproduce, copy, distribute, modify, publish or commercially exploit Platform content without prior written permission.</p>
+    </div>
+
+    <div class="about-card">
+        <h3><i class="ph ph-link-simple"></i> <span class="section-num">34.</span> Third-Party Links</h3>
+        <p>The Platform may contain links to third-party websites or services for customer convenience. Open Market does not control and is not responsible for the content, availability or practices of third-party websites. Accessing third-party websites is entirely at the customer's own risk.</p>
+    </div>
+
+    <div class="about-card">
+        <h3><i class="ph ph-warning-circle"></i> <span class="section-num">35.</span> Limitation of Liability</h3>
+        <p>To the fullest extent permitted by law, Open Market shall not be liable for indirect, incidental, consequential, special or punitive damages arising from the use of the Platform or the purchase of products.</p>
+        <p>Nothing in these Terms excludes liability that cannot legally be excluded under the laws of Ghana. Open Market's total liability in relation to any claim shall, where permitted by law, not exceed the amount paid by the customer for the product giving rise to the claim.</p>
+    </div>
+
+    <div class="about-card">
+        <h3><i class="ph ph-cloud-lightning"></i> <span class="section-num">36.</span> Force Majeure</h3>
+        <p>Open Market shall not be liable for delays or failures resulting from circumstances beyond its reasonable control, including but not limited to natural disasters, floods, fires, epidemics or pandemics, civil unrest, government restrictions, labour disputes, transportation disruptions, telecommunications failures, and power outages.</p>
+        <p>During such events, Open Market's obligations may be suspended until normal operations resume.</p>
+    </div>
+
+    <div class="about-card">
+        <h3><i class="ph ph-scales"></i> <span class="section-num">37.</span> Governing Law</h3>
+        <p>These Terms &amp; Conditions shall be governed by and interpreted in accordance with the laws of the Republic of Ghana. Any dispute arising from these Terms shall be subject to the jurisdiction of the competent courts of Ghana, unless otherwise required by applicable law.</p>
+    </div>
+
+    <div class="about-card">
+        <h3><i class="ph ph-puzzle-piece"></i> <span class="section-num">38.</span> Severability</h3>
+        <p>If any provision of these Terms is found to be unlawful, invalid or unenforceable, the remaining provisions shall remain in full force and effect.</p>
+    </div>
+
+    <div class="about-card">
+        <h3><i class="ph ph-file-text"></i> <span class="section-num">39.</span> Entire Agreement</h3>
+        <p>These Terms &amp; Conditions, together with the Privacy Policy and any additional policies expressly incorporated by reference, constitute the entire agreement between Open Market and the customer regarding use of the Platform.</p>
+    </div>
+
+    <div class="about-card">
+        <h3><i class="ph ph-phone-call"></i> <span class="section-num">40.</span> Contact Information</h3>
+        <p>For questions regarding these Terms &amp; Conditions, customers may contact Open Market through the Support Center available on the Platform.</p>
+        <p>Additional contact information, including official email addresses, telephone numbers and business addresses, may be published on the Platform from time to time.</p>
+    </div>
+
+    <p class="footer-note">These Terms &amp; Conditions work together with our Privacy Policy.<br>See also our <a href="privacy-policy.html" style="color:var(--purple-main); font-weight:600; text-decoration:none;">Privacy Policy</a> and <a href="return-refund-policy.html" style="color:var(--purple-main); font-weight:600; text-decoration:none;">Return &amp; Refund Policy</a>.</p>
+</div>
+
+</body>
+</html>

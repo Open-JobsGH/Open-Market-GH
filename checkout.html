@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open Market | Checkout</title>
+    <link rel="icon" type="image/x-icon" href="icons and images/Open Favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script>
+        if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark-theme');
+    </script>
+    <style>
+        :root {
+            --purple-main: #500e8c;
+            --bg-light: #ffffff; --bg-search: #f1f2f6; --text-dark: #500e8c; --text-body: #1a1a1a;
+            --text-muted: #8e8e93; --border-card: #f2f2f7; --card-sub-bg: #ffffff;
+        }
+        .dark-theme {
+            --purple-main: #a370db;
+            --bg-light: #121212; --bg-search: #2a2a2a; --text-dark: #b689e6; --text-body: #f3f4f6;
+            --text-muted: #9ca3af; --border-card: rgba(255,255,255,0.08); --card-sub-bg: #1e1e1e;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+
+        /* ---------- Custom purple scrollbars (site-wide) ---------- */
+        * { scrollbar-width: thin; scrollbar-color: var(--purple-main) transparent; }
+        *::-webkit-scrollbar { width: 6px; height: 6px; }
+        *::-webkit-scrollbar-track { background: transparent; }
+        *::-webkit-scrollbar-thumb { background-color: var(--purple-main); border-radius: 10px; }
+        *::-webkit-scrollbar-thumb:hover { background-color: var(--purple-hover, var(--purple-main)); }
+
+        body { background-color: var(--bg-light); color: var(--text-body); min-height: 100vh; }
+        .app-container { min-height: 100vh; max-width: 480px; margin: 0 auto; padding: 20px 20px 110px; }
+        @media (min-width: 700px) {
+            .app-container { max-width: 620px; padding: 28px 32px 110px; }
+        }
+        @media (min-width: 1000px) {
+            .app-container { max-width: 760px; padding: 36px 40px 110px; }
+        }
+        @media (min-width: 1440px) {
+            .app-container { max-width: 880px; padding: 44px 40px 110px; }
+        }
+
+        .header-row { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
+        .back-btn { background: none; border: none; font-size: 20px; color: var(--purple-main); cursor: pointer; display: flex; }
+        .header-row h1 { flex: 1; text-align: center; font-size: 16px; font-weight: 700; color: var(--text-dark); margin-right: 20px; }
+
+        .section-card {
+            background: var(--card-sub-bg); border: 1px solid var(--border-card); border-radius: 16px;
+            padding: 16px; margin-bottom: 14px;
+        }
+        #total-to-pay-card { text-align: center; padding: 18px 16px; }
+        .total-to-pay-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+        .total-to-pay-value { font-size: 22px; font-weight: 800; color: var(--text-body); }
+        .total-to-pay-value b { color: var(--purple-main); }
+        .section-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+        .section-title { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: var(--text-dark); }
+        .section-title i { font-size: 16px; }
+        .change-link { font-size: 12px; font-weight: 600; color: var(--purple-main); background: none; border: none; cursor: pointer; font-family: inherit; padding: 0; }
+
+        .selected-summary-name { font-size: 13.5px; font-weight: 700; color: var(--text-body); }
+        .selected-summary-detail { font-size: 12.5px; color: var(--text-muted); line-height: 1.6; margin-top: 3px; }
+
+        .empty-prompt { font-size: 12.5px; color: var(--text-muted); display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        .empty-prompt-add-btn {
+            background: var(--purple-main); color: #fff; border: none; padding: 8px 14px; border-radius: 20px;
+            font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit; white-space: nowrap;
+        }
+
+        .hidden { display: none !important; }
+        .choice-list { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-card); display: flex; flex-direction: column; gap: 8px; }
+        .choice-row {
+            display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid var(--border-card);
+            border-radius: 12px; cursor: pointer; background: var(--bg-search);
+        }
+        .choice-row.selected { border-color: var(--purple-main); background: rgba(80,14,140,0.06); }
+        .choice-row-radio {
+            width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--border-card); flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .choice-row.selected .choice-row-radio { border-color: var(--purple-main); }
+        .choice-row.selected .choice-row-radio::after { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--purple-main); }
+        .choice-row-text { flex: 1; min-width: 0; }
+        .choice-row-title { font-size: 12.5px; font-weight: 700; color: var(--text-body); }
+        .choice-row-sub { font-size: 11.5px; color: var(--text-muted); margin-top: 1px; }
+        .choice-add-link { font-size: 12px; font-weight: 600; color: var(--purple-main); text-align: center; padding: 8px 0 2px; cursor: pointer; }
+
+        /* ---------- Order items ---------- */
+        .order-item-row { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border-card); }
+        .order-item-row:last-child { border-bottom: none; }
+        .order-item-img { width: 52px; height: 52px; border-radius: 10px; object-fit: cover; background: var(--bg-search); flex-shrink: 0; }
+        .order-item-info { flex: 1; min-width: 0; }
+        .order-item-title { font-size: 12.5px; font-weight: 600; color: var(--text-body); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .order-item-meta { font-size: 11.5px; color: var(--text-muted); margin-top: 3px; }
+        .order-item-price { font-size: 12.5px; font-weight: 700; color: var(--text-dark); white-space: nowrap; }
+
+        .summary-row { display: flex; align-items: center; justify-content: space-between; font-size: 13px; padding: 6px 0; color: var(--text-muted); }
+        .summary-row.total { font-size: 15px; font-weight: 800; color: var(--text-body); border-top: 1px solid var(--border-card); margin-top: 6px; padding-top: 12px; }
+        .summary-row.total span:last-child { color: var(--purple-main); }
+
+        .empty-cart-state { padding: 60px 20px; text-align: center; color: var(--text-muted); }
+        .empty-cart-state i { font-size: 44px; color: var(--border-card); margin-bottom: 10px; display: block; }
+
+        .checkout-footer {
+            position: fixed; bottom: 0; left: 0; right: 0; background: var(--card-sub-bg);
+            border-top: 1px solid var(--border-card); padding: 14px 20px; z-index: 20;
+        }
+        .checkout-footer-inner { max-width: 480px; margin: 0 auto; display: flex; align-items: center; gap: 14px; }
+        @media (min-width: 700px) { .checkout-footer-inner { max-width: 620px; } }
+        @media (min-width: 1000px) { .checkout-footer-inner { max-width: 760px; } }
+        @media (min-width: 1440px) { .checkout-footer-inner { max-width: 880px; } }
+        .checkout-footer-total { flex: 1; }
+        .checkout-footer-total .label { font-size: 10.5px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+        .checkout-footer-total .value { font-size: 16px; font-weight: 800; color: var(--text-dark); }
+        .place-order-btn {
+            background: var(--purple-main); color: #fff; border: none; padding: 14px 26px; border-radius: 30px;
+            font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; white-space: nowrap;
+        }
+        .place-order-btn:disabled { background: var(--border-card); color: var(--text-muted); cursor: not-allowed; }
+
+        .method-toggle-row { display: flex; gap: 8px; }
+        .method-toggle-btn {
+            flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+            padding: 11px; border-radius: 12px; border: 1px solid var(--border-card); background: var(--bg-search);
+            color: var(--text-muted); font-size: 12.5px; font-weight: 700; cursor: pointer; font-family: inherit;
+            transition: all 0.15s ease;
+        }
+        .method-toggle-btn.active { background: var(--purple-main); color: #fff; border-color: var(--purple-main); }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="header-row">
+        <button class="back-btn" onclick="window.location.href='cart.html'"><i class="ph ph-caret-left"></i></button>
+        <h1>Checkout</h1>
+    </div>
+
+    <div id="checkout-content">
+        <!-- Total to Pay -->
+        <div class="section-card" id="total-to-pay-card">
+            <div class="total-to-pay-label">Total to Pay</div>
+            <div class="total-to-pay-value" id="total-to-pay-value"></div>
+        </div>
+
+        <!-- Delivery Method -->
+        <div class="section-card">
+            <div class="section-title" style="margin-bottom: 10px;"><i class="ph ph-truck"></i> Delivery Method</div>
+            <div class="method-toggle-row">
+                <button type="button" class="method-toggle-btn active" id="method-btn-delivery" onclick="setDeliveryMethod('delivery')">
+                    <i class="ph ph-truck"></i> Delivery
+                </button>
+                <button type="button" class="method-toggle-btn" id="method-btn-pickup" onclick="setDeliveryMethod('pickup')">
+                    <i class="ph ph-storefront"></i> Self Pickup
+                </button>
+            </div>
+        </div>
+
+        <!-- Delivery Address -->
+        <div class="section-card" id="address-card">
+            <div class="section-card-header">
+                <div class="section-title"><i class="ph ph-map-pin"></i> Delivery Address</div>
+                <button class="change-link hidden" id="address-change-link">Change</button>
+            </div>
+            <div id="address-summary-block"></div>
+            <div class="choice-list hidden" id="address-choice-list"></div>
+        </div>
+
+        <!-- Pickup Location -->
+        <div class="section-card hidden" id="pickup-card">
+            <div class="section-card-header">
+                <div class="section-title"><i class="ph ph-storefront"></i> Pickup Location</div>
+                <button class="change-link hidden" id="pickup-change-link">Change</button>
+            </div>
+            <p style="font-size:11.5px;color:var(--text-muted);margin-bottom:10px;">No payment on arrival — just bring your name and Order ID.</p>
+            <div id="pickup-summary-block"></div>
+            <div class="choice-list hidden" id="pickup-choice-list"></div>
+        </div>
+
+        <!-- Payment Method -->
+        <div class="section-card">
+            <div class="section-card-header">
+                <div class="section-title"><i class="ph ph-wallet"></i> Payment Method</div>
+                <button class="change-link hidden" id="payment-change-link">Change</button>
+            </div>
+            <div id="payment-summary-block"></div>
+            <div class="choice-list hidden" id="payment-choice-list"></div>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="section-card">
+            <div class="section-title" style="margin-bottom: 10px;"><i class="ph ph-receipt"></i> Order Summary</div>
+            <div id="order-items-list"></div>
+            <div style="margin-top: 10px;">
+                <div class="summary-row"><span>Subtotal</span><span id="summary-subtotal"></span></div>
+                <div class="summary-row"><span>Delivery</span><span id="summary-delivery"></span></div>
+                <div class="summary-row"><span>Processing Fee</span><span id="summary-processing-fee"></span></div>
+                <div class="summary-row total"><span>Total</span><span id="summary-total"></span></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="checkout-footer" id="checkout-footer">
+    <div class="checkout-footer-inner">
+        <div class="checkout-footer-total">
+            <div class="label">Total</div>
+            <div class="value" id="footer-total"></div>
+        </div>
+        <button class="place-order-btn" id="place-order-btn" disabled>Place Order</button>
+    </div>
+</div>
+
+<script src="api.js?v=3"></script>
+<script>
+    let selectedAddressId = null;
+    let selectedPaymentMethodId = null;
+    let deliveryMethod = 'delivery'; // 'delivery' | 'pickup'
+    let selectedPickupLocationId = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+        if (!OpenAPI.getSession()) {
+            window.location.href = `login.html?returnTo=${encodeURIComponent('checkout.html')}`;
+            return;
+        }
+
+        const cart = OpenAPI.getCart().filter(i => i.selected !== false);
+        if (cart.length === 0) {
+            document.getElementById('checkout-content').innerHTML = `
+                <div class="empty-cart-state">
+                    <i class="ph ph-shopping-cart"></i>
+                    <p>Nothing selected to check out.</p>
+                </div>
+            `;
+            document.getElementById('checkout-footer').classList.add('hidden');
+            return;
+        }
+
+        const defaultAddress = OpenAPI.getDefaultAddress();
+        const defaultPayment = OpenAPI.getDefaultPaymentMethod();
+        selectedAddressId = defaultAddress ? defaultAddress.addressId : null;
+        selectedPaymentMethodId = defaultPayment ? defaultPayment.methodId : null;
+        selectedPickupLocationId = OpenAPI.getPickupLocations()[0].id;
+
+        renderAddressSection();
+        renderPickupSection();
+        renderPaymentSection();
+        renderOrderSummary(cart);
+        updatePlaceOrderState();
+    });
+
+    /* ---------- Delivery method toggle ---------- */
+    function setDeliveryMethod(method) {
+        deliveryMethod = method;
+        document.getElementById('method-btn-delivery').classList.toggle('active', method === 'delivery');
+        document.getElementById('method-btn-pickup').classList.toggle('active', method === 'pickup');
+        document.getElementById('address-card').classList.toggle('hidden', method !== 'delivery');
+        document.getElementById('pickup-card').classList.toggle('hidden', method !== 'pickup');
+        renderOrderSummary(OpenAPI.getCart().filter(i => i.selected !== false));
+        updatePlaceOrderState();
+    }
+
+    /* ---------- Pickup location section ---------- */
+    function renderPickupSection() {
+        const locations = OpenAPI.getPickupLocations();
+        const block = document.getElementById('pickup-summary-block');
+        const changeLink = document.getElementById('pickup-change-link');
+
+        const selected = locations.find(p => p.id === selectedPickupLocationId) || locations[0];
+        selectedPickupLocationId = selected.id;
+        block.innerHTML = `
+            <div class="selected-summary-name">${escapeHtml(selected.name)}</div>
+            <div class="selected-summary-detail">${escapeHtml(selected.area)}</div>
+        `;
+        changeLink.classList.toggle('hidden', locations.length <= 1);
+    }
+
+    document.getElementById('pickup-change-link').addEventListener('click', () => {
+        const list = document.getElementById('pickup-choice-list');
+        const opening = list.classList.contains('hidden');
+        list.classList.toggle('hidden');
+        if (!opening) return;
+
+        const locations = OpenAPI.getPickupLocations();
+        list.innerHTML = locations.map(p => `
+            <div class="choice-row ${p.id === selectedPickupLocationId ? 'selected' : ''}" onclick="selectPickupLocation('${p.id}')">
+                <div class="choice-row-radio"></div>
+                <div class="choice-row-text">
+                    <div class="choice-row-title">${escapeHtml(p.name)}</div>
+                    <div class="choice-row-sub">${escapeHtml(p.area)}</div>
+                </div>
+            </div>
+        `).join('');
+    });
+
+    function selectPickupLocation(id) {
+        selectedPickupLocationId = id;
+        document.getElementById('pickup-choice-list').classList.add('hidden');
+        renderPickupSection();
+        updatePlaceOrderState();
+    }
+
+    function escapeHtml(str) {
+        return String(str == null ? '' : str).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+
+    /* ---------- Address section ---------- */
+    function renderAddressSection() {
+        const addresses = OpenAPI.getAddresses();
+        const block = document.getElementById('address-summary-block');
+        const changeLink = document.getElementById('address-change-link');
+
+        if (addresses.length === 0) {
+            block.innerHTML = `
+                <div class="empty-prompt">
+                    <span>No address saved yet.</span>
+                    <button class="empty-prompt-add-btn" onclick="goAddAddress()">Add Address</button>
+                </div>
+            `;
+            changeLink.classList.add('hidden');
+            return;
+        }
+
+        const selected = addresses.find(a => a.addressId === selectedAddressId) || addresses[0];
+        selectedAddressId = selected.addressId;
+        block.innerHTML = `
+            <div class="selected-summary-name">${escapeHtml(selected.label)} · ${escapeHtml(selected.fullName)} · ${escapeHtml(selected.phone)}</div>
+            <div class="selected-summary-detail">${escapeHtml(selected.addressLine)}, ${escapeHtml(selected.city)}, ${escapeHtml(selected.region)}</div>
+        `;
+        changeLink.classList.remove('hidden');
+    }
+
+    document.getElementById('address-change-link').addEventListener('click', () => {
+        const list = document.getElementById('address-choice-list');
+        const opening = list.classList.contains('hidden');
+        list.classList.toggle('hidden');
+        if (!opening) return;
+
+        const addresses = OpenAPI.getAddresses();
+        list.innerHTML = addresses.map(a => `
+            <div class="choice-row ${a.addressId === selectedAddressId ? 'selected' : ''}" onclick="selectAddress('${a.addressId}')">
+                <div class="choice-row-radio"></div>
+                <div class="choice-row-text">
+                    <div class="choice-row-title">${escapeHtml(a.label)} · ${escapeHtml(a.fullName)}</div>
+                    <div class="choice-row-sub">${escapeHtml(a.addressLine)}, ${escapeHtml(a.city)}</div>
+                </div>
+            </div>
+        `).join('') + `<div class="choice-add-link" onclick="goAddAddress()">+ Add a new address</div>`;
+    });
+
+    function selectAddress(addressId) {
+        selectedAddressId = addressId;
+        document.getElementById('address-choice-list').classList.add('hidden');
+        renderAddressSection();
+        updatePlaceOrderState();
+    }
+
+    function goAddAddress() {
+        window.location.href = `addresses.html?returnTo=${encodeURIComponent('checkout.html')}`;
+    }
+
+    /* ---------- Payment method section ---------- */
+    function renderPaymentSection() {
+        const methods = OpenAPI.getPaymentMethods();
+        const block = document.getElementById('payment-summary-block');
+        const changeLink = document.getElementById('payment-change-link');
+
+        if (methods.length === 0) {
+            block.innerHTML = `
+                <div class="empty-prompt">
+                    <span>No payment method saved yet.</span>
+                    <button class="empty-prompt-add-btn" onclick="goAddPayment()">Add Method</button>
+                </div>
+            `;
+            changeLink.classList.add('hidden');
+            return;
+        }
+
+        const selected = methods.find(m => m.methodId === selectedPaymentMethodId) || methods[0];
+        selectedPaymentMethodId = selected.methodId;
+        block.innerHTML = `<div class="selected-summary-name">${escapeHtml(selected.display)}</div>`;
+        changeLink.classList.remove('hidden');
+    }
+
+    document.getElementById('payment-change-link').addEventListener('click', () => {
+        const list = document.getElementById('payment-choice-list');
+        const opening = list.classList.contains('hidden');
+        list.classList.toggle('hidden');
+        if (!opening) return;
+
+        const methods = OpenAPI.getPaymentMethods();
+        list.innerHTML = methods.map(m => `
+            <div class="choice-row ${m.methodId === selectedPaymentMethodId ? 'selected' : ''}" onclick="selectPayment('${m.methodId}')">
+                <div class="choice-row-radio"></div>
+                <div class="choice-row-text">
+                    <div class="choice-row-title">${escapeHtml(m.display)}</div>
+                </div>
+            </div>
+        `).join('') + `<div class="choice-add-link" onclick="goAddPayment()">+ Add a new payment method</div>`;
+    });
+
+    function selectPayment(methodId) {
+        selectedPaymentMethodId = methodId;
+        document.getElementById('payment-choice-list').classList.add('hidden');
+        renderPaymentSection();
+        updatePlaceOrderState();
+    }
+
+    function goAddPayment() {
+        window.location.href = `payments.html?returnTo=${encodeURIComponent('checkout.html')}`;
+    }
+
+    /* ---------- Order summary ---------- */
+    function renderOrderSummary(cart) {
+        const itemsList = document.getElementById('order-items-list');
+        itemsList.innerHTML = cart.map(i => {
+            const product = OpenAPI.getProductById(i.productId);
+            if (!product) return '';
+            const variantBits = OpenAPI.formatVariantLabel(i.variant);
+            return `
+                <div class="order-item-row">
+                    <img class="order-item-img" src="${product.images[0]}" alt="${escapeHtml(product.title)}">
+                    <div class="order-item-info">
+                        <div class="order-item-title">${escapeHtml(product.title)}</div>
+                        <div class="order-item-meta">${variantBits ? escapeHtml(variantBits) + ' · ' : ''}Qty ${i.qty}</div>
+                    </div>
+                    <div class="order-item-price">${OpenAPI.formatCurrencyHTML(product.price * i.qty)}</div>
+                </div>
+            `;
+        }).join('');
+
+        const subtotal = OpenAPI.getCartTotal();
+        const deliveryFee = deliveryMethod === 'pickup' ? 0 : cart.reduce((max, i) => {
+            const product = OpenAPI.getProductById(i.productId);
+            return Math.max(max, product ? Number(product.deliveryFee) || 0 : 0);
+        }, 0);
+        const processingFee = OpenAPI.calculateProcessingFee(subtotal);
+        const total = subtotal + deliveryFee + processingFee;
+
+        document.getElementById('summary-subtotal').innerHTML = OpenAPI.formatCurrencyHTML(subtotal);
+        document.getElementById('summary-delivery').innerHTML = OpenAPI.formatCurrencyHTML(deliveryFee);
+        document.getElementById('summary-processing-fee').innerHTML = OpenAPI.formatCurrencyHTML(processingFee);
+        document.getElementById('summary-total').innerHTML = OpenAPI.formatCurrencyHTML(total);
+        document.getElementById('footer-total').innerHTML = OpenAPI.formatCurrencyHTML(total);
+        document.getElementById('total-to-pay-value').innerHTML = OpenAPI.formatCurrencyHTML(total);
+    }
+
+    /* ---------- Place order ---------- */
+    function updatePlaceOrderState() {
+        const btn = document.getElementById('place-order-btn');
+        const locationReady = deliveryMethod === 'pickup' ? !!selectedPickupLocationId : !!selectedAddressId;
+        btn.disabled = !locationReady || !selectedPaymentMethodId;
+    }
+
+    document.getElementById('place-order-btn').addEventListener('click', async () => {
+        const btn = document.getElementById('place-order-btn');
+        btn.disabled = true;
+        btn.innerText = 'Placing Order…';
+
+        const processingFee = OpenAPI.calculateProcessingFee(OpenAPI.getCartTotal());
+        const order = OpenAPI.createOrder({
+            addressId: selectedAddressId,
+            paymentMethodId: selectedPaymentMethodId,
+            processingFee,
+            deliveryMethod,
+            pickupLocationId: deliveryMethod === 'pickup' ? selectedPickupLocationId : null,
+        });
+
+        if (!order) {
+            btn.disabled = false;
+            btn.innerText = 'Place Order';
+            await OpenAPI.showAlert("Something went wrong placing your order. Please try again.", { title: 'Order Failed' });
+            return;
+        }
+
+        OpenAPI.refreshCartNavBadge();
+        await OpenAPI.showAlert(
+            `Your order #${order.displayCode || order.orderId} has been placed! You can track it under My Orders.`,
+            { title: 'Order Placed 🎉', iconKind: 'success' }
+        );
+        window.location.href = 'orders.html';
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open Market | Community Guidelines</title>
+    <link rel="icon" type="image/x-icon" href="icons and images/Open Favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script>
+        if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark-theme');
+    </script>
+    <style>
+        :root {
+            --purple-main: #500e8c;
+            --bg-light: #ffffff; --bg-search: #f1f2f6; --text-dark: #500e8c; --text-body: #1a1a1a;
+            --text-muted: #8e8e93; --border-card: #f2f2f7; --card-sub-bg: #ffffff;
+        }
+        .dark-theme {
+            --purple-main: #a370db;
+            --bg-light: #121212; --bg-search: #2a2a2a; --text-dark: #b689e6; --text-body: #f3f4f6;
+            --text-muted: #9ca3af; --border-card: rgba(255,255,255,0.08); --card-sub-bg: #1e1e1e;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+
+        /* ---------- Custom purple scrollbars (site-wide) ---------- */
+        * { scrollbar-width: thin; scrollbar-color: var(--purple-main) transparent; }
+        *::-webkit-scrollbar { width: 6px; height: 6px; }
+        *::-webkit-scrollbar-track { background: transparent; }
+        *::-webkit-scrollbar-thumb { background-color: var(--purple-main); border-radius: 10px; }
+        *::-webkit-scrollbar-thumb:hover { background-color: var(--purple-hover, var(--purple-main)); }
+
+        body { background-color: var(--bg-light); color: var(--text-body); min-height: 100vh; }
+        .app-container { min-height: 100vh; max-width: 480px; margin: 0 auto; padding: 20px 20px 60px; }
+        @media (min-width: 700px) {
+            .app-container { max-width: 620px; padding: 28px 32px 70px; }
+        }
+        @media (min-width: 1000px) {
+            .app-container { max-width: 760px; padding: 36px 40px 80px; }
+        }
+        @media (min-width: 1440px) {
+            .app-container { max-width: 880px; padding: 44px 40px 90px; }
+        }
+
+        .header-row { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
+        .back-btn { background: none; border: none; font-size: 20px; color: var(--purple-main); cursor: pointer; display: flex; }
+        .header-row h1 { flex: 1; text-align: center; font-size: 16px; font-weight: 700; color: var(--text-dark); margin-right: 20px; }
+
+        .brand-block { display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 26px; }
+        .brand-mark {
+            width: 64px; height: 64px; border-radius: 20px; background: var(--purple-main);
+            display: flex; align-items: center; justify-content: center; margin-bottom: 14px;
+            box-shadow: 0 8px 20px rgba(80,14,140,0.25);
+        }
+        .brand-mark i { font-size: 30px; color: #fff; }
+        .brand-block h2 { font-size: 18px; font-weight: 800; color: var(--text-body); }
+        .brand-block p { font-size: 12.5px; color: var(--text-muted); margin-top: 4px; }
+
+        .about-card {
+            background: var(--card-sub-bg); border: 1px solid var(--border-card); border-radius: 16px;
+            padding: 18px; margin-bottom: 14px;
+        }
+        .about-card h3 { font-size: 13px; font-weight: 700; color: var(--text-dark); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        .about-card h3 i { font-size: 15px; }
+        .about-card p { font-size: 13px; line-height: 1.6; color: var(--text-muted); }
+
+        .meta-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 4px; font-size: 12.5px; }
+        .meta-row:not(:last-child) { border-bottom: 1px solid var(--border-card); }
+        .meta-row span:first-child { color: var(--text-muted); }
+        .meta-row span:last-child { color: var(--text-body); font-weight: 600; }
+
+        .footer-note { text-align: center; font-size: 11.5px; color: var(--text-muted); margin-top: 24px; line-height: 1.6; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="header-row">
+        <button class="back-btn" onclick="window.location.href='settings.html'"><i class="ph ph-caret-left"></i></button>
+        <h1>Community Guidelines</h1>
+    </div>
+
+    <div class="about-card">
+        <h3><i class="ph ph-handshake"></i> Be Respectful</h3>
+        <p>Treat our support team and fellow shoppers with respect. Harassment, hate speech, or abusive behaviour of any kind is not tolerated.</p>
+    </div>
+
+    <div class="about-card">
+        <h3><i class="ph ph-shield-warning"></i> Fair Use of the Platform</h3>
+        <p>Every product on Open Market is sold directly by us — please don't attempt fraudulent orders, payment abuse, or misuse of promotions and returns.</p>
+    </div>
+
+    <div class="about-card">
+        <h3><i class="ph ph-chat-circle-dots"></i> Honest Reviews</h3>
+        <p>Reviews should reflect your genuine experience with a product. Fake or incentivised reviews go against the spirit of an open, trustworthy store.</p>
+    </div>
+
+    <p class="footer-note">These guidelines help keep Open Market safe and fair.<br>Last updated: 2026.</p>
+</div>
+
+</body>
+</html>

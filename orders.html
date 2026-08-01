@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open Market | My Orders</title>
+    <link rel="icon" type="image/x-icon" href="icons and images/Open Favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script>
+        if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark-theme');
+    </script>
+    <style>
+        :root {
+            --purple-main: #500e8c;
+            --bg-light: #ffffff; --bg-search: #f1f2f6; --text-dark: #500e8c; --text-body: #1a1a1a;
+            --text-muted: #8e8e93; --border-card: #f2f2f7; --card-sub-bg: #ffffff;
+        }
+        .dark-theme {
+            --purple-main: #a370db;
+            --bg-light: #121212; --bg-search: #2a2a2a; --text-dark: #b689e6; --text-body: #f3f4f6;
+            --text-muted: #9ca3af; --border-card: rgba(255,255,255,0.08); --card-sub-bg: #1e1e1e;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+
+        /* ---------- Custom purple scrollbars (site-wide) ---------- */
+        * { scrollbar-width: thin; scrollbar-color: var(--purple-main) transparent; }
+        *::-webkit-scrollbar { width: 6px; height: 6px; }
+        *::-webkit-scrollbar-track { background: transparent; }
+        *::-webkit-scrollbar-thumb { background-color: var(--purple-main); border-radius: 10px; }
+        *::-webkit-scrollbar-thumb:hover { background-color: var(--purple-hover, var(--purple-main)); }
+
+        body { background-color: var(--bg-light); color: var(--text-body); min-height: 100vh; }
+        .app-container { min-height: 100vh; max-width: 480px; margin: 0 auto; padding: 20px 20px 60px; }
+        @media (min-width: 700px) {
+            .app-container { max-width: 620px; padding: 28px 32px 70px; }
+        }
+        @media (min-width: 1000px) {
+            .app-container { max-width: 760px; padding: 36px 40px 80px; }
+        }
+        @media (min-width: 1440px) {
+            .app-container { max-width: 880px; padding: 44px 40px 90px; }
+        }
+
+        .header-row { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
+        .back-btn { background: none; border: none; font-size: 20px; color: var(--purple-main); cursor: pointer; display: flex; }
+        .header-row h1 { flex: 1; text-align: center; font-size: 16px; font-weight: 700; color: var(--text-dark); margin-right: 20px; }
+
+        .status-filter-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 18px; }
+        .status-pill {
+            flex-shrink: 0; padding: 7px 14px; border-radius: 30px; font-size: 12px; font-weight: 600;
+            background: var(--bg-search); color: var(--text-muted); cursor: pointer; white-space: nowrap;
+        }
+        .status-pill.active { background: var(--purple-main); color: #fff; }
+
+        .empty-state { padding: 70px 20px; text-align: center; color: var(--text-muted); }
+        .empty-state i { font-size: 48px; color: var(--border-card); margin-bottom: 12px; display: block; }
+        .empty-state p { font-size: 14px; }
+        .empty-state .sub { font-size: 12px; margin-top: 6px; }
+        .empty-state-cta {
+            margin-top: 18px; display: inline-block; background: var(--purple-main); color: #fff;
+            padding: 12px 24px; border-radius: 30px; font-size: 13px; font-weight: 700; cursor: pointer;
+        }
+
+        /* ---------- Order cards ---------- */
+        .order-card {
+            background: var(--card-sub-bg); border: 1px solid var(--border-card); border-radius: 16px;
+            padding: 16px; margin-bottom: 14px;
+        }
+        .order-card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+        .order-id { font-size: 12.5px; font-weight: 700; color: var(--text-body); }
+        .order-status-badge { font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+        .order-status-badge.processing { background: rgba(80,14,140,0.12); color: var(--purple-main); }
+        .order-status-badge.shipped { background: rgba(37,99,235,0.12); color: #2563eb; }
+        .order-status-badge.delivered { background: rgba(22,163,74,0.12); color: #16a34a; }
+        .order-status-badge.cancelled { background: rgba(224,41,62,0.12); color: #e0293e; }
+        .order-date { font-size: 11px; color: var(--text-muted); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .countdown-pill {
+            font-size: 10px; font-weight: 700; color: var(--purple-main); background: rgba(80,14,140,0.08);
+            padding: 2px 9px; border-radius: 20px;
+        }
+
+        .order-item-row { display: flex; gap: 10px; padding: 8px 0; border-top: 1px solid var(--border-card); }
+        .order-item-img { width: 44px; height: 44px; border-radius: 8px; object-fit: cover; background: var(--bg-search); flex-shrink: 0; }
+        .order-item-info { flex: 1; min-width: 0; }
+        .order-item-title { font-size: 12px; font-weight: 600; color: var(--text-body); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+        .order-item-link { cursor: pointer; }
+        .order-item-link:hover { color: var(--purple-main); text-decoration: underline; }
+        .order-item-meta { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+        .order-card-footer {
+            display: flex; align-items: center; justify-content: space-between; margin-top: 10px; padding-top: 10px;
+            border-top: 1px solid var(--border-card);
+        }
+        .order-total-label { font-size: 11px; color: var(--text-muted); }
+        .order-total-value { font-size: 14px; font-weight: 800; color: var(--purple-main); }
+
+        .cancel-order-btn {
+            width: 100%; margin-top: 12px; background: none; border: 1px solid #e0293e; color: #e0293e;
+            padding: 9px; border-radius: 30px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit;
+        }
+        .cancel-order-btn:hover { background: rgba(224,41,62,0.06); }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="header-row">
+        <button class="back-btn" onclick="window.location.href='settings.html'"><i class="ph ph-caret-left"></i></button>
+        <h1>My Orders</h1>
+    </div>
+
+    <div class="status-filter-row" id="status-filter-row">
+        <div class="status-pill active" data-status="All">All</div>
+        <div class="status-pill" data-status="Processing">Processing</div>
+        <div class="status-pill" data-status="Shipped">Shipped</div>
+        <div class="status-pill" data-status="Delivered">Delivered</div>
+        <div class="status-pill" data-status="Cancelled">Cancelled</div>
+    </div>
+
+    <div id="orders-content"></div>
+</div>
+
+<script src="api.js?v=3"></script>
+<script>
+    let activeStatus = 'All';
+    let allOrders = [];
+    let countdownIntervalId = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+        if (!OpenAPI.getSession()) {
+            window.location.href = `login.html?returnTo=${encodeURIComponent('orders.html')}`;
+            return;
+        }
+
+        allOrders = OpenAPI.getOrders();
+        renderOrders();
+
+        document.querySelectorAll('.status-pill').forEach(pill => {
+            pill.addEventListener('click', () => {
+                document.querySelectorAll('.status-pill').forEach(p => p.classList.remove('active'));
+                pill.classList.add('active');
+                activeStatus = pill.dataset.status;
+                renderOrders();
+            });
+        });
+
+        // Keeps the "time left" text ticking without a full re-render every time.
+        countdownIntervalId = setInterval(updateCountdowns, 30000);
+    });
+
+    function escapeHtml(str) {
+        return String(str == null ? '' : str).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+
+    function formatOrderDate(timestamp) {
+        return new Date(timestamp).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
+    // Orders placed before this feature existed won't have a stored
+    // processingDeadline — fall back to computing the same 24h-from-creation
+    // deadline on the fly so old orders still get a working countdown.
+    function getProcessingDeadline(order) {
+        return order.processingDeadline || (order.date + 24 * 60 * 60 * 1000);
+    }
+
+    // Still "Processing" and inside its 24-hour window (matches OpenAPI.cancelOrder's own rule).
+    function isCancellable(order) {
+        return order.status === 'Processing' && Date.now() < getProcessingDeadline(order);
+    }
+
+    function formatCountdown(deadline) {
+        const msLeft = deadline - Date.now();
+        if (msLeft <= 0) return 'Finalizing your order';
+        const totalMinutes = Math.ceil(msLeft / 60000);
+        const hours = Math.floor(totalMinutes / 60);
+        const minutes = totalMinutes % 60;
+        if (hours <= 0) return `${minutes}m left`;
+        return `${hours}h ${minutes}m left`;
+    }
+
+    // Cheap tick: only touch the countdown text nodes, not the whole list
+    // (so an open card / scroll position isn't disturbed every 30s).
+    function updateCountdowns() {
+        document.querySelectorAll('[data-countdown-deadline]').forEach(el => {
+            const deadline = Number(el.dataset.countdownDeadline);
+            el.innerText = formatCountdown(deadline);
+        });
+        // A countdown reaching zero can flip cancel-eligibility, so do a full
+        // re-render occasionally to drop the Cancel button once it's expired.
+        if (allOrders.some(o => o.status === 'Processing' && getProcessingDeadline(o) <= Date.now())) {
+            renderOrders();
+        }
+    }
+
+    function goToProduct(productId) {
+        window.location.href = `home.html?product=${encodeURIComponent(productId)}`;
+    }
+
+    async function cancelOrderClick(orderId) {
+        const confirmed = await OpenAPI.showConfirm(
+            'Cancel this order? This can\'t be undone.',
+            { title: 'Cancel Order?', confirmLabel: 'Yes, Cancel', cancelLabel: 'Keep Order' }
+        );
+        if (!confirmed) return;
+
+        const ok = OpenAPI.cancelOrder(orderId);
+        if (!ok) {
+            await OpenAPI.showAlert('This order can no longer be cancelled — it may already be past the 24-hour processing window.', { title: 'Unable to Cancel' });
+        }
+        allOrders = OpenAPI.getOrders();
+        renderOrders();
+    }
+
+    function renderOrders() {
+        const container = document.getElementById('orders-content');
+        const orders = activeStatus === 'All' ? allOrders : allOrders.filter(o => o.status === activeStatus);
+
+        if (allOrders.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="ph ph-package"></i>
+                    <p>No orders yet.</p>
+                    <p class="sub">Your order history will show up here after checkout.</p>
+                    <div class="empty-state-cta" onclick="window.location.href='home.html'">Start Shopping</div>
+                </div>
+            `;
+            return;
+        }
+
+        if (orders.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="ph ph-package"></i>
+                    <p>No ${escapeHtml(activeStatus.toLowerCase())} orders.</p>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = orders.map(order => `
+            <div class="order-card">
+                <div class="order-card-top">
+                    <span class="order-id">#${escapeHtml(order.displayCode || order.orderId)}</span>
+                    <span class="order-status-badge ${order.status.toLowerCase()}">${escapeHtml(order.status)}</span>
+                </div>
+                <div class="order-date">
+                    ${formatOrderDate(order.date)} · ${order.items.length} item${order.items.length !== 1 ? 's' : ''}
+                    ${order.status === 'Processing' ? `<span class="countdown-pill" data-countdown-deadline="${getProcessingDeadline(order)}">${formatCountdown(getProcessingDeadline(order))}</span>` : ''}
+                </div>
+                ${order.items.map(item => `
+                    <div class="order-item-row">
+                        <img class="order-item-img" src="${item.image || ''}" alt="${escapeHtml(item.title)}">
+                        <div class="order-item-info">
+                            <div class="order-item-title order-item-link" onclick="goToProduct('${item.productId}')">${escapeHtml(item.title)}</div>
+                            <div class="order-item-meta">${(() => { const v = escapeHtml(OpenAPI.formatVariantLabel(item.variant)); return v ? v + ' · ' : ''; })()}Qty ${item.qty} · ${OpenAPI.formatCurrencyHTML(item.price)}</div>
+                        </div>
+                    </div>
+                `).join('')}
+                <div class="order-card-footer">
+                    <span class="order-total-label">Total</span>
+                    <span class="order-total-value">${OpenAPI.formatCurrencyHTML(order.total).replace(/<[^>]+>/g, '')}</span>
+                </div>
+                ${isCancellable(order) ? `<button class="cancel-order-btn" onclick="cancelOrderClick('${order.orderId}')">Cancel Order</button>` : ''}
+            </div>
+        `).join('');
+    }
+</script>
+</body>
+</html>

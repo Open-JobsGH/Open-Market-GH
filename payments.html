@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open Market | Payment Methods</title>
+    <link rel="icon" type="image/x-icon" href="icons and images/Open Favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script>
+        if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark-theme');
+    </script>
+    <style>
+        :root {
+            --purple-main: #500e8c;
+            --bg-light: #ffffff; --bg-search: #f1f2f6; --text-dark: #500e8c; --text-body: #1a1a1a;
+            --text-muted: #8e8e93; --border-card: #f2f2f7; --card-sub-bg: #ffffff;
+        }
+        .dark-theme {
+            --purple-main: #a370db;
+            --bg-light: #121212; --bg-search: #2a2a2a; --text-dark: #b689e6; --text-body: #f3f4f6;
+            --text-muted: #9ca3af; --border-card: rgba(255,255,255,0.08); --card-sub-bg: #1e1e1e;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+
+        /* ---------- Custom purple scrollbars (site-wide) ---------- */
+        * { scrollbar-width: thin; scrollbar-color: var(--purple-main) transparent; }
+        *::-webkit-scrollbar { width: 6px; height: 6px; }
+        *::-webkit-scrollbar-track { background: transparent; }
+        *::-webkit-scrollbar-thumb { background-color: var(--purple-main); border-radius: 10px; }
+        *::-webkit-scrollbar-thumb:hover { background-color: var(--purple-hover, var(--purple-main)); }
+
+        body { background-color: var(--bg-light); color: var(--text-body); min-height: 100vh; }
+        .app-container { min-height: 100vh; max-width: 480px; margin: 0 auto; padding: 20px 20px 60px; }
+        @media (min-width: 700px) {
+            .app-container { max-width: 620px; padding: 28px 32px 70px; }
+        }
+        @media (min-width: 1000px) {
+            .app-container { max-width: 760px; padding: 36px 40px 80px; }
+        }
+        @media (min-width: 1440px) {
+            .app-container { max-width: 880px; padding: 44px 40px 90px; }
+        }
+
+        .header-row { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
+        .back-btn { background: none; border: none; font-size: 20px; color: var(--purple-main); cursor: pointer; display: flex; }
+        .header-row h1 { flex: 1; text-align: center; font-size: 16px; font-weight: 700; color: var(--text-dark); margin-right: 20px; }
+
+        .empty-state { padding: 70px 20px; text-align: center; color: var(--text-muted); }
+        .empty-state i { font-size: 48px; color: var(--border-card); margin-bottom: 12px; display: block; }
+        .empty-state p { font-size: 14px; }
+        .empty-state .sub { font-size: 12px; margin-top: 6px; }
+
+        .add-method-btn {
+            width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;
+            background: var(--card-sub-bg); border: 1.5px dashed var(--border-card); color: var(--purple-main);
+            border-radius: 14px; padding: 16px; font-size: 13.5px; font-weight: 700; cursor: pointer;
+            margin-top: 16px; font-family: inherit;
+        }
+        .add-method-btn:hover { border-color: var(--purple-main); background: var(--bg-search); }
+
+        /* ---------- Payment method cards ---------- */
+        .method-card {
+            display: flex; align-items: center; gap: 12px;
+            background: var(--card-sub-bg); border: 1px solid var(--border-card); border-radius: 16px;
+            padding: 14px 16px; margin-bottom: 12px;
+        }
+        .method-card.is-default { border-color: var(--purple-main); }
+        .method-icon-box {
+            width: 40px; height: 40px; border-radius: 12px; background: var(--bg-search);
+            display: flex; align-items: center; justify-content: center; color: var(--purple-main); font-size: 19px; flex-shrink: 0;
+        }
+        .method-info { flex: 1; min-width: 0; }
+        .method-display { font-size: 13.5px; font-weight: 700; color: var(--text-body); }
+        .method-sub-row { display: flex; align-items: center; gap: 8px; margin-top: 3px; }
+        .default-badge {
+            font-size: 10px; font-weight: 700; color: #fff; background: var(--purple-main);
+            padding: 2px 8px; border-radius: 20px; letter-spacing: 0.02em;
+        }
+        .set-default-link { font-size: 11.5px; font-weight: 600; color: var(--purple-main); cursor: pointer; background: none; border: none; padding: 0; font-family: inherit; }
+        .method-delete-btn { background: none; border: none; color: var(--text-muted); font-size: 17px; cursor: pointer; flex-shrink: 0; }
+        .method-delete-btn:hover { color: #e0293e; }
+
+        .method-types-row { display: flex; justify-content: center; gap: 14px; margin-top: 22px; opacity: 0.6; }
+        .method-types-row i { font-size: 26px; color: var(--text-muted); }
+
+        /* ---------- Add form ---------- */
+        .hidden { display: none !important; }
+        .form-title { font-size: 15px; font-weight: 800; color: var(--text-dark); margin-bottom: 16px; }
+
+        .type-tab-row {
+            display: flex; gap: 3px; margin-bottom: 20px; padding: 3px;
+            border: 1.5px solid var(--purple-main); border-radius: 30px;
+        }
+        .type-tab {
+            flex: 1; text-align: center; padding: 10px; border-radius: 24px; border: none;
+            font-size: 12.5px; font-weight: 700; color: var(--purple-main); cursor: pointer; background: transparent;
+        }
+        .type-tab.active { background: var(--purple-main); color: #fff; }
+
+        .field-section-label { font-size: 13px; font-weight: 700; color: var(--text-body); margin-bottom: 8px; }
+
+        .network-tile-row { display: flex; gap: 10px; margin-bottom: 16px; }
+        .network-tile {
+            flex: 1; height: 52px; border: 1.5px solid var(--border-card); border-radius: 12px;
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
+            background: var(--card-sub-bg); font-size: 12px; font-weight: 800; letter-spacing: 0.02em;
+        }
+        .network-tile.active { border-color: var(--purple-main); border-width: 2px; box-shadow: 0 0 0 2px rgba(80,14,140,0.12); }
+        .network-tile[data-network="MTN"] { color: #1a1a1a; background: #ffcb05; }
+        .network-tile[data-network="Vodafone"] { color: #fff; background: #e60000; }
+        .network-tile[data-network="AirtelTigo"] { color: #fff; background: linear-gradient(90deg,#e60000 50%,#0033a0 50%); }
+        .dark-theme .network-tile[data-network="MTN"] { color: #1a1a1a; }
+
+        .phone-input-row { display: flex; border: 1px solid var(--border-card); border-radius: 12px; overflow: hidden; background: var(--bg-search); }
+        .phone-input-prefix { display: flex; align-items: center; gap: 4px; padding: 0 10px; font-size: 13px; color: var(--text-body); border-right: 1px solid var(--border-card); flex-shrink: 0; }
+        .phone-input-row input { border: none; background: transparent; flex: 1; min-width: 0; padding: 12px 14px; font-size: 13.5px; outline: none; color: var(--text-body); font-family: inherit; }
+        .phone-input-row:focus-within { border-color: var(--purple-main); }
+
+        .input-group { display: flex; flex-direction: column; margin-bottom: 12px; }
+        .input-group label { font-size: 12px; color: var(--text-muted); margin-bottom: 5px; font-weight: 500; }
+        .input-group input, .input-group select {
+            padding: 12px 14px; border: 1px solid var(--border-card); border-radius: 12px; font-size: 13.5px;
+            outline: none; background-color: var(--bg-search); color: var(--text-body); font-family: inherit;
+        }
+        .input-group input:focus, .input-group select:focus { border-color: var(--purple-main); }
+        .input-row { display: flex; gap: 10px; }
+        .input-row .input-group { flex: 1; }
+
+        .card-number-wrap { position: relative; }
+        .card-number-wrap input { padding-right: 74px; }
+        .card-brand-badges { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); display: flex; gap: 4px; }
+        .card-brand-chip { font-size: 8.5px; font-weight: 800; padding: 3px 6px; border-radius: 4px; color: #fff; letter-spacing: 0.02em; }
+        .card-brand-chip.visa { background: #1a1f71; }
+        .card-brand-chip.mastercard { background: #eb001b; }
+
+        .form-hint { font-size: 11px; color: var(--text-muted); margin: -6px 0 14px; line-height: 1.5; display: flex; gap: 6px; }
+        .form-hint i { flex-shrink: 0; margin-top: 1px; }
+
+        .error-message { display: none; color: #e0293e; font-size: 11.5px; font-weight: 500; margin: -6px 0 10px; }
+
+        .form-actions { display: flex; gap: 10px; }
+        .save-method-btn, .cancel-form-btn {
+            flex: 1; border: none; padding: 13px; border-radius: 30px; font-size: 13.5px; font-weight: 700;
+            cursor: pointer; font-family: inherit;
+        }
+        .save-method-btn { background: var(--purple-main); color: #fff; }
+        .cancel-form-btn { background: var(--border-card); color: var(--text-muted); }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="header-row">
+        <button class="back-btn" onclick="window.location.href='settings.html'"><i class="ph ph-caret-left"></i></button>
+        <h1>Payment Methods</h1>
+    </div>
+
+    <!-- LIST VIEW -->
+    <div id="list-view">
+        <div id="method-list"></div>
+        <button class="add-method-btn" id="add-method-btn"><i class="ph ph-plus-circle"></i> Add Payment Method</button>
+        <div class="method-types-row">
+            <i class="ph ph-device-mobile"></i>
+            <i class="ph ph-credit-card"></i>
+        </div>
+    </div>
+
+    <!-- FORM VIEW -->
+    <div id="form-view" class="hidden">
+        <div class="form-title">Add Payment Method</div>
+        <div class="type-tab-row">
+            <div class="type-tab active" data-type="momo">Mobile Money</div>
+            <div class="type-tab" data-type="card">Card Payment</div>
+        </div>
+
+        <form id="momo-form">
+            <div class="field-section-label">Select Network:</div>
+            <div class="network-tile-row" id="momo-network-tiles">
+                <div class="network-tile active" data-network="MTN">MTN</div>
+                <div class="network-tile" data-network="Telecel">Telecel</div>
+                <div class="network-tile" data-network="AT Money">AT Money</div>
+            </div>
+            <input type="hidden" id="input-momo-provider" value="MTN">
+
+            <div class="field-section-label">Phone Number:</div>
+            <div class="input-group">
+                <div class="phone-input-row">
+                    <span class="phone-input-prefix">🇬🇭 +233</span>
+                    <input type="tel" id="input-momo-number" placeholder="024XXXXXXX">
+                </div>
+            </div>
+            <div class="error-message" id="momoError">Please enter a valid mobile money number.</div>
+            <div class="form-actions">
+                <button type="button" class="cancel-form-btn" id="cancel-form-btn-momo">Cancel</button>
+                <button type="submit" class="save-method-btn">Save Payment Method</button>
+            </div>
+        </form>
+
+        <form id="card-form" class="hidden">
+            <div class="field-section-label">Card Number:</div>
+            <div class="input-group">
+                <input type="text" id="input-card-name" placeholder="Cardholder Name">
+            </div>
+            <div class="input-group">
+                <div class="card-number-wrap">
+                    <input type="text" id="input-card-number" inputmode="numeric" maxlength="19" placeholder="Card Number">
+                    <div class="card-brand-badges">
+                        <span class="card-brand-chip visa">VISA</span>
+                        <span class="card-brand-chip mastercard">MC</span>
+                    </div>
+                </div>
+            </div>
+            <div class="input-row">
+                <div class="input-group">
+                    <input type="text" id="input-card-expiry" maxlength="5" placeholder="Expiry (MM/YY)">
+                </div>
+                <div class="input-group">
+                    <input type="text" id="input-card-cvv" inputmode="numeric" maxlength="4" placeholder="CVV">
+                </div>
+            </div>
+            <input type="hidden" id="input-card-brand" value="Visa">
+            <div class="form-hint"><i class="ph ph-shield-check"></i> We only save the card brand and last 4 digits — your full card number, expiry, and CVV are never stored.</div>
+            <div class="error-message" id="cardError">Please fill in every card field.</div>
+            <div class="form-actions">
+                <button type="button" class="cancel-form-btn" id="cancel-form-btn-card">Cancel</button>
+                <button type="submit" class="save-method-btn">Save Payment Method</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="api.js?v=3"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        if (!OpenAPI.getSession()) {
+            window.location.href = `login.html?returnTo=${encodeURIComponent('payments.html' + window.location.search)}`;
+            return;
+        }
+        renderMethodList();
+    });
+
+    function escapeHtml(str) {
+        return String(str == null ? '' : str).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+
+    function renderMethodList() {
+        const methods = OpenAPI.getPaymentMethods();
+        const container = document.getElementById('method-list');
+
+        if (methods.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="ph ph-credit-card"></i>
+                    <p>No payment methods saved.</p>
+                    <p class="sub">Add Mobile Money or a card for faster checkout.</p>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = methods.map(m => `
+            <div class="method-card ${m.isDefault ? 'is-default' : ''}">
+                <div class="method-icon-box"><i class="ph ${m.type === 'momo' ? 'ph-device-mobile' : 'ph-credit-card'}"></i></div>
+                <div class="method-info">
+                    <div class="method-display">${escapeHtml(m.display)}</div>
+                    <div class="method-sub-row">
+                        ${m.isDefault ? '<span class="default-badge">Default</span>' : `<button class="set-default-link" onclick="handleSetDefault('${m.methodId}')">Set as Default</button>`}
+                    </div>
+                </div>
+                <button class="method-delete-btn" onclick="handleDeleteMethod('${m.methodId}')"><i class="ph ph-trash"></i></button>
+            </div>
+        `).join('');
+    }
+
+    function showListView() {
+        document.getElementById('list-view').classList.remove('hidden');
+        document.getElementById('form-view').classList.add('hidden');
+    }
+
+    function showFormView() {
+        document.getElementById('list-view').classList.add('hidden');
+        document.getElementById('form-view').classList.remove('hidden');
+    }
+
+    document.getElementById('add-method-btn').addEventListener('click', () => {
+        document.getElementById('momo-form').reset();
+        document.getElementById('card-form').reset();
+        document.getElementById('momoError').style.display = 'none';
+        document.getElementById('cardError').style.display = 'none';
+        selectTypeTab('momo');
+        selectNetworkTile('MTN');
+        showFormView();
+    });
+
+    function selectNetworkTile(network) {
+        document.getElementById('input-momo-provider').value = network;
+        document.querySelectorAll('.network-tile').forEach(tile => tile.classList.toggle('active', tile.dataset.network === network));
+    }
+    document.querySelectorAll('.network-tile').forEach(tile => {
+        tile.addEventListener('click', () => selectNetworkTile(tile.dataset.network));
+    });
+
+    // Auto-detect Visa vs Mastercard from the leading digit as the person types —
+    // matches the brand badges shown inside the input.
+    document.getElementById('input-card-number').addEventListener('input', function() {
+        const firstDigit = this.value.replace(/\D/g, '')[0];
+        const brand = firstDigit === '5' ? 'Mastercard' : 'Visa';
+        document.getElementById('input-card-brand').value = brand;
+        document.querySelector('.card-brand-chip.visa').style.opacity = brand === 'Visa' ? '1' : '0.35';
+        document.querySelector('.card-brand-chip.mastercard').style.opacity = brand === 'Mastercard' ? '1' : '0.35';
+    });
+
+    function selectTypeTab(type) {
+        document.querySelectorAll('.type-tab').forEach(tab => tab.classList.toggle('active', tab.dataset.type === type));
+        document.getElementById('momo-form').classList.toggle('hidden', type !== 'momo');
+        document.getElementById('card-form').classList.toggle('hidden', type !== 'card');
+    }
+    document.querySelectorAll('.type-tab').forEach(tab => {
+        tab.addEventListener('click', () => selectTypeTab(tab.dataset.type));
+    });
+
+    document.getElementById('cancel-form-btn-momo').addEventListener('click', showListView);
+    document.getElementById('cancel-form-btn-card').addEventListener('click', showListView);
+
+    function afterSaveReturn() {
+        renderMethodList();
+        showListView();
+        const params = new URLSearchParams(window.location.search);
+        const returnTo = params.get('returnTo');
+        if (returnTo) window.location.href = OpenAPI.getSafeReturnTo();
+    }
+
+    document.getElementById('momo-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const provider = document.getElementById('input-momo-provider').value;
+        const momoNumber = document.getElementById('input-momo-number').value.trim();
+        const digits = momoNumber.replace(/\D/g, '');
+
+        if (digits.length < 9) {
+            document.getElementById('momoError').style.display = 'block';
+            return;
+        }
+        document.getElementById('momoError').style.display = 'none';
+
+        OpenAPI.addPaymentMethod({ type: 'momo', provider, momoNumber });
+        afterSaveReturn();
+    });
+
+    document.getElementById('card-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const cardholderName = document.getElementById('input-card-name').value.trim();
+        const cardBrand = document.getElementById('input-card-brand').value;
+        const cardNumber = document.getElementById('input-card-number').value.trim();
+        const expiry = document.getElementById('input-card-expiry').value.trim();
+        const cvv = document.getElementById('input-card-cvv').value.trim();
+        const digits = cardNumber.replace(/\D/g, '');
+
+        if (!cardholderName || digits.length < 12 || !expiry || !cvv) {
+            document.getElementById('cardError').style.display = 'block';
+            return;
+        }
+        document.getElementById('cardError').style.display = 'none';
+
+        // Only cardholder name, brand, and last 4 ever reach addPaymentMethod / storage — see api.js.
+        OpenAPI.addPaymentMethod({ type: 'card', cardBrand, cardNumber, cardholderName });
+        afterSaveReturn();
+    });
+
+    async function handleDeleteMethod(methodId) {
+        const confirmed = await OpenAPI.showConfirm('Remove this payment method?', { title: 'Delete Payment Method' });
+        if (!confirmed) return;
+        OpenAPI.deletePaymentMethod(methodId);
+        renderMethodList();
+    }
+
+    function handleSetDefault(methodId) {
+        OpenAPI.setDefaultPaymentMethod(methodId);
+        renderMethodList();
+    }
+</script>
+</body>
+</html>

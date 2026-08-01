@@ -1,0 +1,2142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open Market - Home</title>
+    <link rel="icon" type="image/x-icon" href="icons and images/Open Favicon.png">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Phosphor Icons (matches cart.html / categories.html / wishlist.html / settings.html) -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark-theme');
+    </script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            purple: 'rgb(var(--purple-main-rgb) / <alpha-value>)',
+                            purpleHover: 'rgb(var(--purple-hover-rgb) / <alpha-value>)',
+                            bgGray: 'var(--bg-page)',
+                            cardBg: 'var(--card-sub-bg)',
+                            textDark: 'var(--text-dark)',
+                            textMuted: 'var(--text-muted)',
+                        },
+                        gray: {
+                            50: 'var(--gray-50)', 100: 'var(--gray-100)', 150: 'var(--border-card)',
+                            200: 'var(--gray-200)', 300: 'var(--gray-300)', 400: 'var(--gray-400)',
+                            500: 'var(--gray-500)', 600: 'var(--gray-600)', 700: 'var(--gray-700)',
+                            800: 'var(--gray-800)', 900: 'var(--gray-900)',
+                        },
+                        slate: {
+                            700: 'var(--gray-700)',
+                        },
+                    },
+                    borderRadius: {
+                        'brand-lg': '16px',
+                        'brand-sm': '8px',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --purple-main: #500e8c;
+            --purple-hover: #6c21b8;
+            --purple-main-rgb: 80, 14, 140;
+            --purple-hover-rgb: 108, 33, 184;
+            --bg-light: #ffffff;
+            --bg-page: #fcfcfc;
+            --bg-search: #f1f2f6;
+            --text-dark: #500e8c;
+            --text-body: #1a1a1a;
+            --text-muted: #8e8e93;
+            --border-card: #f2f2f7;
+            --card-sub-bg: #ffffff;
+            --gray-50: #f9fafb; --gray-100: #f3f4f6; --gray-200: #e5e7eb; --gray-300: #d1d5db;
+            --gray-400: #9ca3af; --gray-500: #8e8e93; --gray-600: #4b5563; --gray-700: #374151;
+            --gray-800: #1a1a1a; --gray-900: #0f0f10;
+            --flash-bg: #fef2f3; --flash-border: #fde0e2;
+            --shelf-bg: #f6f6f7; --shelf-border: #ececee;
+        }
+        .dark-theme {
+            --purple-main: #a370db;
+            --purple-hover: #b689e6;
+            --purple-main-rgb: 163, 112, 219;
+            --purple-hover-rgb: 182, 137, 230;
+            --bg-light: #121212;
+            --bg-page: #121212;
+            --bg-search: #2a2a2a;
+            --text-dark: #b689e6;
+            --text-body: #f3f4f6;
+            --text-muted: #9ca3af;
+            --border-card: rgba(255,255,255,0.08);
+            --card-sub-bg: #1e1e1e;
+            --gray-50: #1c1c1e; --gray-100: #232326; --gray-200: #33333a; --gray-300: #46464e;
+            --gray-400: #8b8b93; --gray-500: #9ca3af; --gray-600: #b8b8c0; --gray-700: #d0d0d6;
+            --gray-800: #f3f4f6; --gray-900: #f5f5f7;
+            --flash-bg: rgba(224,41,62,0.10); --flash-border: rgba(224,41,62,0.25);
+            --shelf-bg: #1a1a1c; --shelf-border: rgba(255,255,255,0.08);
+        }
+        body { background-color: var(--bg-page); transition: background-color 0.2s ease, color 0.2s ease; }
+
+        /* ---------- Custom purple scrollbars (site-wide) ---------- */
+        * { scrollbar-width: thin; scrollbar-color: var(--purple-main) transparent; }
+        *::-webkit-scrollbar { width: 6px; height: 6px; }
+        *::-webkit-scrollbar-track { background: transparent; }
+        *::-webkit-scrollbar-thumb { background-color: var(--purple-main); border-radius: 10px; }
+        *::-webkit-scrollbar-thumb:hover { background-color: var(--purple-hover, var(--purple-main)); }
+
+        .shelf-scroll-arrow {
+            position: absolute; right: 2px; top: 50%; transform: translateY(-50%);
+            width: 28px; height: 28px; border-radius: 50%; border: none; cursor: pointer;
+            background: var(--card-sub-bg); color: var(--purple-main);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+            transition: opacity 0.25s ease;
+            opacity: 1;
+        }
+        .shelf-scroll-arrow.hidden { opacity: 0; pointer-events: none; }
+
+        /* ---------- search suggestions / recent searches dropdown ---------- */
+        .search-suggest-panel {
+            position: absolute; top: calc(100% + 8px); left: 0; right: 0;
+            background: var(--card-sub-bg); border: 1px solid var(--border-card);
+            border-radius: 16px; box-shadow: 0 12px 32px rgba(0,0,0,0.12);
+            z-index: 60; overflow: hidden; max-height: 360px; overflow-y: auto;
+        }
+        .search-suggest-section-label {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 12px 16px 6px; font-size: 10.5px; font-weight: 700; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 0.04em;
+        }
+        .search-suggest-clear-all { font-size: 10.5px; font-weight: 600; color: var(--purple-main); cursor: pointer; text-transform: none; letter-spacing: 0; }
+        .search-recent-row {
+            display: flex; align-items: center; gap: 10px; padding: 9px 16px; cursor: pointer;
+        }
+        .search-recent-row:hover, .search-recent-row.kb-active { background: var(--bg-search); }
+        .search-recent-row i.ph-clock-counter-clockwise { color: var(--text-muted); font-size: 14px; flex-shrink: 0; }
+        .search-recent-row span.term { flex: 1; font-size: 12.5px; color: var(--text-body); }
+        .search-recent-row .remove-x { color: var(--text-muted); font-size: 13px; padding: 2px; }
+        .search-recent-row .remove-x:hover { color: #e0293e; }
+        .search-suggest-product-row {
+            display: flex; align-items: center; gap: 10px; padding: 8px 16px; cursor: pointer;
+        }
+        .search-suggest-product-row:hover, .search-suggest-product-row.kb-active { background: var(--bg-search); }
+        .search-suggest-product-row i.ph-magnifying-glass { color: var(--text-muted); font-size: 14px; flex-shrink: 0; }
+        .search-suggest-product-row .title { flex: 1; font-size: 12.5px; color: var(--text-body); line-height: 1.3; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .search-suggest-product-row .title mark { background: none; color: var(--purple-main); font-weight: 700; }
+        .search-suggest-empty { padding: 20px 16px; text-align: center; font-size: 12px; color: var(--text-muted); }
+
+        /* ---------- search filter sidebar ---------- */
+        .filter-block { border-bottom: 1px solid var(--border-card); padding-bottom: 12px; }
+        .filter-block-toggle {
+            width: 100%; display: flex; align-items: center; justify-content: space-between;
+            background: none; border: none; cursor: pointer; font-family: inherit;
+            font-size: 12.5px; font-weight: 700; color: var(--text-body); padding: 4px 0 8px;
+        }
+        .filter-block-toggle i { color: var(--text-muted); transition: transform 0.2s ease; }
+        .filter-block.collapsed .filter-block-toggle i { transform: rotate(180deg); }
+        .filter-block.collapsed .filter-block-body { display: none; }
+
+        .filter-checkbox-row {
+            display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-body);
+            cursor: pointer; padding: 3px 0;
+        }
+        .filter-checkbox-row input[type="checkbox"] { accent-color: var(--purple-main); width: 14px; height: 14px; cursor: pointer; }
+        .filter-checkbox-row .count { color: var(--text-muted); font-size: 11px; margin-left: auto; }
+
+        .price-input-box {
+            flex: 1; display: flex; align-items: center; gap: 4px; border: 1px solid var(--border-card);
+            border-radius: 10px; padding: 7px 8px; background: var(--bg-search);
+        }
+        .price-input-box span { font-size: 10.5px; color: var(--text-muted); font-weight: 600; flex-shrink: 0; }
+        .price-input-box input {
+            width: 100%; border: none; background: none; outline: none; font-size: 11.5px;
+            color: var(--text-body); font-family: inherit; -moz-appearance: textfield;
+        }
+        .price-input-box input::-webkit-outer-spin-button,
+        .price-input-box input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+        .price-slider-wrap { position: relative; height: 16px; margin: 6px 2px 2px; }
+        .price-slider-track-bg {
+            position: absolute; top: 7px; left: 0; right: 0; height: 3px;
+            background: var(--border-card); border-radius: 4px;
+        }
+        .price-slider-track-fill {
+            position: absolute; top: 7px; height: 3px; background: var(--purple-main); border-radius: 4px;
+        }
+        .price-slider-wrap input[type="range"] {
+            position: absolute; top: 0; left: 0; width: 100%; height: 16px; margin: 0;
+            background: none; pointer-events: none; -webkit-appearance: none; appearance: none;
+        }
+        .price-slider-wrap input[type="range"]::-webkit-slider-thumb {
+            pointer-events: auto; -webkit-appearance: none; appearance: none;
+            width: 16px; height: 16px; border-radius: 50%; background: #fff;
+            border: 2px solid var(--purple-main); cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+        }
+        .price-slider-wrap input[type="range"]::-moz-range-thumb {
+            pointer-events: auto; width: 16px; height: 16px; border-radius: 50%; background: #fff;
+            border: 2px solid var(--purple-main); cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+        }
+        .price-slider-wrap input[type="range"]::-webkit-slider-runnable-track { background: none; }
+        .price-slider-wrap input[type="range"]::-moz-range-track { background: none; }
+
+        .page-pill {
+            width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 11.5px; font-weight: 700; color: var(--text-muted); cursor: pointer; border: 1px solid var(--border-card);
+            background: var(--card-sub-bg);
+        }
+        .page-pill.active { background: var(--purple-main); color: #fff; border-color: var(--purple-main); }
+        .page-pill.nav-arrow { color: var(--text-muted); }
+        .page-pill[disabled], .page-pill.disabled { opacity: 0.4; pointer-events: none; }
+
+        /* ---------- custom sort dropdown ---------- */
+        .custom-select { position: relative; }
+        .custom-select-trigger {
+            display: flex; align-items: center; gap: 8px; background: var(--card-sub-bg);
+            border: 1px solid var(--border-card); border-radius: 30px; padding: 7px 14px;
+            font-size: 11.5px; font-weight: 700; color: var(--text-body); cursor: pointer;
+            font-family: inherit; transition: border-color 0.15s ease;
+        }
+        .custom-select-trigger:hover { border-color: var(--purple-main); }
+        .custom-select-trigger i { color: var(--purple-main); font-size: 11px; transition: transform 0.2s ease; }
+        .custom-select.open .custom-select-trigger i { transform: rotate(180deg); }
+        .custom-select.open .custom-select-trigger { border-color: var(--purple-main); }
+        .custom-select-menu {
+            position: absolute; top: calc(100% + 8px); right: 0; min-width: 180px;
+            background: var(--card-sub-bg); border: 1px solid var(--border-card); border-radius: 14px;
+            box-shadow: 0 12px 28px rgba(0,0,0,0.14); overflow: hidden; z-index: 50; padding: 6px;
+        }
+        .custom-select-option {
+            padding: 9px 12px; font-size: 12px; font-weight: 600; color: var(--text-body);
+            border-radius: 9px; cursor: pointer; transition: background 0.12s ease;
+        }
+        .custom-select-option:hover { background: var(--bg-search); }
+        .custom-select-option.selected { background: rgba(80,14,140,0.08); color: var(--purple-main); }
+
+        /* The desktop sidebar becomes a bottom drawer on mobile when opened,
+           instead of duplicating its markup (which would duplicate element IDs). */
+        #filters-sidebar.filters-mobile-open {
+            display: block !important; position: fixed; left: 0; right: 0; bottom: 0;
+            z-index: 50; background: var(--card-sub-bg); border-radius: 20px 20px 0 0;
+            max-height: 80vh; overflow-y: auto; padding: 16px; width: auto;
+            box-shadow: 0 -8px 30px rgba(0,0,0,0.15);
+        }
+
+        .apply-filter-btn { background: var(--purple-main); color: #fff; cursor: pointer; }
+        .apply-filter-btn:hover { opacity: 0.9; }
+        .apply-filter-btn:disabled {
+            background: var(--border-card); color: var(--text-muted); cursor: not-allowed; opacity: 1;
+        }
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: var(--card-sub-bg); border-top: 1px solid var(--border-card);
+            display: flex; align-items: center; justify-content: space-around; z-index: 10;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.03); padding: 12px 0;
+        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-muted); cursor: pointer; position: relative; }
+        .nav-item.active { color: var(--purple-main); }
+        .bottom-nav .nav-item i { font-size: 16px; color: var(--text-muted); }
+        .bottom-nav .nav-item.active i { font-size: 16px; color: var(--purple-main); }
+        .bottom-nav .nav-item span { font-size: 9px; font-weight: 500; color: var(--text-muted); }
+        .bottom-nav .nav-item.active span { font-weight: 600; color: var(--purple-main); }
+        .nav-badge {
+            display: none; position: absolute; top: -3px; right: -8px; background: var(--purple-main); color: #fff;
+            min-width: 14px; height: 14px; border-radius: 8px;
+            align-items: center; justify-content: center; padding: 0 4px;
+        }
+        .bottom-nav .nav-item span.nav-badge { font-size: 8px; font-weight: 700; color: #fff; }
+
+        /* ---------- reviews tab ---------- */
+        .review-score-block { text-align: center; flex-shrink: 0; }
+        .review-score-number { font-size: 34px; font-weight: 800; color: var(--text-body); line-height: 1; }
+        .review-score-stars { color: #f5a623; font-size: 15px; margin-top: 6px; letter-spacing: 1px; }
+        .review-score-sub { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+        .review-score-sub.count { margin-top: 2px; }
+        .review-breakdown-row { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text-body); margin-bottom: 6px; }
+        .review-breakdown-row .star-label { display: flex; align-items: center; gap: 2px; width: 26px; flex-shrink: 0; font-weight: 600; }
+        .review-breakdown-row .star-label i { color: #f5a623; font-size: 11px; }
+        .review-bar-track { flex: 1; height: 7px; border-radius: 4px; background: var(--bg-search); overflow: hidden; }
+        .review-bar-fill { height: 100%; background: var(--purple-main); border-radius: 4px; }
+        .review-breakdown-row .pct { width: 32px; flex-shrink: 0; text-align: right; color: var(--text-muted); }
+
+        .review-star-picker { display: flex; gap: 6px; }
+        .review-star-picker i { font-size: 22px; color: var(--purple-main); cursor: pointer; }
+        .review-textarea {
+            width: 100%; border: 1px solid var(--border-card); border-radius: 10px; padding: 10px 12px;
+            font-size: 12px; font-family: inherit; background: var(--bg-page); color: var(--text-body);
+            resize: vertical; min-height: 80px; outline: none;
+        }
+        .review-textarea:focus { border-color: var(--purple-main); }
+        .review-photo-btn {
+            display: inline-flex; align-items: center; gap: 6px; border: 1px dashed var(--border-card);
+            border-radius: 10px; padding: 8px 14px; font-size: 11px; font-weight: 600; color: var(--purple-main);
+            background: none; cursor: pointer; font-family: inherit;
+        }
+        .review-submit-btn {
+            background: var(--purple-main); color: #fff; border: none; border-radius: 10px;
+            padding: 9px 20px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit;
+        }
+        .review-card { border-top: 1px solid var(--border-card); padding-top: 14px; }
+        .review-card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+        .review-card-avatar { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+        .review-card-name { font-size: 12px; font-weight: 700; color: var(--text-body); }
+        .review-card-stars { color: #f5a623; font-size: 11px; margin-top: 2px; }
+        .review-card-date { font-size: 10.5px; color: var(--text-muted); white-space: nowrap; }
+        .review-card-edited-tag { font-size: 9.5px; color: var(--text-muted); font-style: italic; }
+        .review-card-text { font-size: 11.5px; color: var(--text-muted); line-height: 1.6; margin-top: 8px; }
+        .review-card-photo { width: 64px; height: 64px; border-radius: 10px; object-fit: cover; margin-top: 8px; }
+        .review-card-actions { display: flex; gap: 14px; margin-top: 8px; }
+        .review-card-actions button {
+            background: none; border: none; cursor: pointer; font-family: inherit;
+            font-size: 10.5px; font-weight: 600; color: var(--text-muted);
+            display: inline-flex; align-items: center; gap: 4px; padding: 0;
+        }
+        .review-card-actions button:hover { color: var(--purple-main); }
+        .review-card-actions button.delete-action:hover { color: #e0293e; }
+        .review-list { max-height: 620px; overflow-y: auto; padding-right: 4px; }
+        .photo-lightbox-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.82); z-index: 100;
+            align-items: center; justify-content: center; padding: 24px;
+        }
+        .photo-lightbox-overlay.open { display: flex; }
+        .review-card-photo, #review-photo-preview { cursor: pointer; }
+        .review-empty-state { text-align: center; padding: 28px 10px; }
+        .review-empty-state i { font-size: 32px; color: var(--border-card); }
+        .review-empty-state h4 { font-size: 13px; font-weight: 700; color: var(--text-body); margin-top: 10px; }
+        .review-empty-state p { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+
+        /* ---------- hero carousel animation ---------- */
+        @keyframes heroImageIn {
+            from { transform: translateY(70px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes heroImageOut {
+            from { transform: translateY(0); opacity: 1; }
+            to { transform: translateY(70px); opacity: 0; }
+        }
+        @keyframes heroTextIn {
+            from { transform: translateX(-60px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes heroTextOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(-60px); opacity: 0; }
+        }
+        #hero-image { opacity: 0; }
+        #hero-image.hero-anim-in { animation: heroImageIn 0.7s ease-out forwards; }
+        #hero-image.hero-anim-out { animation: heroImageOut 0.6s ease-in forwards; }
+        #hero-text-block { opacity: 0; }
+        #hero-text-block.hero-anim-in { animation: heroTextIn 0.7s ease-out forwards; }
+        #hero-text-block.hero-anim-out { animation: heroTextOut 0.6s ease-in forwards; }
+        .hero-dot {
+            width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.4);
+            cursor: pointer; transition: background 0.2s ease, transform 0.2s ease;
+        }
+        .hero-dot.active { background: #fff; transform: scale(1.2); }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+    <script src="api.js?v=3"></script>
+</head>
+<body class="bg-brand-bgGray text-brand-textDark antialiased pb-28">
+
+    <!-- Header Area -->
+    <header class="bg-brand-bgGray py-4 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 md:px-8 flex flex-col md:flex-row md:items-center justify-start gap-4 md:gap-8">
+
+            <!-- Dynamic Brand Header Left Action -->
+            <div class="flex items-center shrink-0">
+                <!-- HOMEPAGE BRAND LOGO -->
+                <div id="header-logo" class="flex items-center">
+                    <img
+                        src="icons and images/Open Market Logo.png"
+                        alt="Open Market"
+                        class="h-9 w-auto object-contain cursor-pointer"
+                        onclick="showHomepage()"
+                    >
+                </div>
+
+                <!-- AD VIEW / SEARCH BACK ACTION -->
+                <button id="header-back" onclick="showHomepage()" class="hidden items-center gap-2 text-brand-purple font-extrabold text-2xl tracking-tight hover:opacity-80 transition">
+                    <i class="ph ph-caret-left text-xl"></i> Back
+                </button>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="w-full md:max-w-2xl relative" id="search-bar-wrapper">
+                <div class="relative w-full h-11">
+                    <span class="absolute inset-y-0 left-4 flex items-center text-gray-400 pointer-events-none">
+                        <i class="ph ph-magnifying-glass text-sm"></i>
+                    </span>
+                    <input
+                        type="text"
+                        id="search-input"
+                        placeholder="Search for products, brands and categories..."
+                        onkeydown="handleSearchKeydown(event)"
+                        oninput="handleSearchInput()"
+                        onfocus="handleSearchFocus()"
+                        autocomplete="off"
+                        class="w-full h-full pl-11 pr-4 bg-[var(--bg-search)] rounded-full text-xs focus:outline-none focus:ring-2 focus:ring-brand-purple/20 transition placeholder-gray-400"
+                    >
+                </div>
+                <div id="search-suggest-panel" class="search-suggest-panel hidden"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ================= HOMEPAGE VIEW ================= -->
+    <div id="homepage-view" class="transition-opacity duration-300">
+        <main class="max-w-7xl mx-auto px-4 md:px-8 mt-5 space-y-8">
+
+            <!-- Premium Horizontal Hero Banner (auto-advancing carousel of trending products) -->
+            <section>
+                <div id="hero-banner" onclick="handleHeroBannerClick()" style="touch-action: pan-y;" class="relative w-full bg-gradient-to-r from-[#2b0f4a] via-[#4d1680] to-[#c296ba] rounded-brand-lg overflow-hidden min-h-[170px] md:h-[240px] flex items-center text-white px-5 sm:px-6 md:px-12 py-6 md:py-0 shadow-sm cursor-pointer">
+                    <div id="hero-text-block" class="z-10 w-[58%] sm:w-1/2 md:max-w-md space-y-2">
+                        <span class="inline-flex items-center gap-1 bg-white/10 backdrop-blur-md px-2 py-0.5 rounded-brand-sm text-[7px] sm:text-[8px] font-bold tracking-wider uppercase">
+                            <i class="ph ph-fill ph-lightning text-yellow-400"></i> Trending Now
+                        </span>
+                        <h1 id="hero-title" class="text-base sm:text-xl md:text-3xl font-black leading-tight tracking-tight"></h1>
+                        <p id="hero-tagline" class="text-[9px] sm:text-[10px] text-white/70 font-light max-w-xs"></p>
+                        <button onclick="event.stopPropagation(); handleHeroBannerClick();" class="bg-white text-[#500e8c] font-semibold px-3.5 py-2 rounded-brand-sm text-[9px] sm:text-[10px] inline-flex items-center gap-1.5 hover:bg-[#f3f4f6] transition shadow-sm">
+                            Shop Now <i class="ph ph-caret-right text-[10px]"></i>
+                        </button>
+                    </div>
+
+                    <div class="absolute right-0 md:right-12 bottom-0 top-0 h-full w-[42%] sm:w-[46%] md:w-[320px] flex justify-center items-center pointer-events-none overflow-hidden">
+                        <img id="hero-image" src="" alt="" class="object-cover h-[85%] sm:h-[90%] md:h-full w-full drop-shadow-2xl">
+                    </div>
+
+                    <!-- Carousel position dots -->
+                    <div id="hero-dots" class="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-10"></div>
+                </div>
+            </section>
+
+
+
+            <!-- Shop by Category -->
+            <section class="space-y-3 relative">
+                <h2 class="text-xs md:text-sm font-extrabold text-brand-purple tracking-tight">Shop by Category</h2>
+                <div class="relative">
+                    <div class="flex gap-3 overflow-x-auto no-scrollbar pb-1" id="home-category-rail"></div>
+                    <button onclick="scrollShelf('home-category-rail', this)" class="shelf-scroll-arrow hidden">
+                        <i class="ph ph-caret-right"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- SECTION: Limited Time Deals -->
+            <section class="space-y-3 bg-[var(--flash-bg)] p-3 rounded-brand-lg border border-[var(--flash-border)]">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1.5">
+                    <div class="flex items-center gap-1.5">
+                        <span class="flex h-2 w-2 relative">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-red-600"></span>
+                        </span>
+                        <h2 class="text-xs md:text-sm font-black text-red-700 tracking-tight">Limited Time Flash Deals</h2>
+                    </div>
+                    <div class="flex items-center gap-1 text-[10px] font-bold text-red-900">
+                        <span class="text-[9px] text-red-700 font-normal uppercase mr-0.5">Ends in:</span>
+                        <span id="hours-box" class="bg-red-600 text-white px-1.5 py-0.5 rounded text-[9px]">02</span> :
+                        <span id="mins-box" class="bg-red-600 text-white px-1.5 py-0.5 rounded text-[9px]">45</span> :
+                        <span id="secs-box" class="bg-red-600 text-white px-1.5 py-0.5 rounded text-[9px]">30</span>
+                    </div>
+                </div>
+
+                <!-- Horizontal Shelf -->
+                <div class="relative">
+                    <div class="flex gap-3 overflow-x-auto no-scrollbar pb-1" id="flash-deals-rail"></div>
+                    <button onclick="scrollShelf('flash-deals-rail', this)" class="shelf-scroll-arrow hidden">
+                        <i class="ph ph-caret-right"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Top Deals For You -->
+            <section class="space-y-3">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-xs md:text-sm font-extrabold text-brand-purple tracking-tight">Top Deals For You</h2>
+                    <a href="javascript:void(0)" onclick="showProductList('Top Deals', OpenAPI.getAllProducts().slice().sort((a,b) => (b.discountPercent||0)-(a.discountPercent||0)))" class="text-brand-purple hover:text-brand-purpleHover font-bold text-[11px] flex items-center gap-0.5">
+                        View all <i class="ph ph-caret-right text-[10px]"></i>
+                    </a>
+                </div>
+
+                <!-- Horizontal Shelf -->
+                <div class="relative">
+                    <div class="flex gap-3 overflow-x-auto no-scrollbar pb-1" id="top-deals-grid"></div>
+                    <button onclick="scrollShelf('top-deals-grid', this)" class="shelf-scroll-arrow hidden">
+                        <i class="ph ph-caret-right"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- SECTION: New Arrivals -->
+            <section class="space-y-3">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center gap-1.5">
+                   
+                        <h2 class="text-xs md:text-sm font-extrabold text-brand-purple tracking-tight">New Arrivals</h2>
+                    </div>
+                    <a href="javascript:void(0)" onclick="showProductList('New Arrivals', OpenAPI.getAllProducts().slice().reverse())" class="text-brand-purple hover:text-brand-purpleHover font-bold text-[11px] flex items-center gap-0.5">
+                        View all <i class="ph ph-caret-right text-[10px]"></i>
+                    </a>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 gap-3" id="new-arrivals-grid"></div>
+            </section>
+
+            <!-- SECTION: Recommended For You -->
+            <section class="space-y-3">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-xs md:text-sm font-extrabold text-brand-purple tracking-tight">Recommended For You</h2>
+                    <a href="javascript:void(0)" onclick="showProductList('Recommended For You', OpenAPI.getTrendingProducts(20))" class="text-brand-purple hover:text-brand-purpleHover font-bold text-[11px] flex items-center gap-0.5">
+                        More <i class="ph ph-caret-right text-[10px]"></i>
+                    </a>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 gap-3" id="recommended-grid"></div>
+            </section>
+
+            <!-- SECTION: Recently Viewed -->
+            <section id="recently-viewed-section" class="space-y-2.5 bg-[var(--shelf-bg)] p-3 rounded-brand-lg border border-[var(--shelf-border)]">
+                <div class="flex items-center gap-1">
+                    <i class="ph ph-clock-counter-clockwise text-gray-500 text-[10px]"></i>
+                    <h2 class="text-[11px] font-bold text-gray-800 tracking-tight">Recently Viewed</h2>
+                </div>
+
+                <div class="relative">
+                    <div id="recently-viewed-shelf" class="flex gap-3 overflow-x-auto no-scrollbar pb-1"></div>
+                    <button onclick="scrollShelf('recently-viewed-shelf', this)" class="shelf-scroll-arrow hidden">
+                        <i class="ph ph-caret-right"></i>
+                    </button>
+                </div>
+
+                <!-- Nothing viewed yet -->
+                <div id="recently-viewed-empty" class="hidden text-center py-2 text-[9px] text-gray-400 font-medium">
+                    Products you view will show up here.
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+
+    <!-- ================= SEARCH RESULTS VIEW ================= -->
+    <div id="search-view" class="hidden transition-opacity duration-300">
+        <main class="max-w-7xl mx-auto px-4 md:px-8 mt-4">
+            <div class="flex items-center justify-between mb-3">
+                <p id="search-results-counter" class="text-[11px] text-gray-500 font-medium"></p>
+                <div class="flex items-center gap-1.5 text-[11px] text-gray-600">
+                    <span class="hidden sm:inline">Sort by:</span>
+                    <div class="custom-select" id="sort-dropdown">
+                        <button type="button" class="custom-select-trigger" onclick="toggleSortDropdown()">
+                            <span id="sort-select-label">Relevance</span>
+                            <i class="ph ph-caret-down"></i>
+                        </button>
+                        <div class="custom-select-menu hidden" id="sort-select-menu">
+                            <div class="custom-select-option" data-value="relevance" onclick="chooseSortOption('relevance')">Relevance</div>
+                            <div class="custom-select-option" data-value="price-asc" onclick="chooseSortOption('price-asc')">Price: Low to High</div>
+                            <div class="custom-select-option" data-value="price-desc" onclick="chooseSortOption('price-desc')">Price: High to Low</div>
+                            <div class="custom-select-option" data-value="rating-desc" onclick="chooseSortOption('rating-desc')">Highest Rated</div>
+                            <div class="custom-select-option" data-value="newest" onclick="chooseSortOption('newest')">Newest</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-5 items-start">
+                <!-- Filters sidebar (doubles as a bottom drawer on mobile — see .filters-mobile-open) -->
+                <aside id="filters-sidebar" class="hidden md:block w-[220px] flex-shrink-0 sticky top-20 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-[13px] font-extrabold text-gray-900">Filters</h3>
+                        <button onclick="clearAllFilters()" class="text-[11px] font-semibold text-brand-purple hover:text-brand-purpleHover">Clear all</button>
+                    </div>
+
+                    <!-- Category / Department filter -->
+                    <div class="filter-block">
+                        <button class="filter-block-toggle" onclick="toggleFilterBlock(this)">
+                            <span>Category</span><i class="ph ph-caret-up text-[11px]"></i>
+                        </button>
+                        <div class="filter-block-body space-y-3">
+                            <div>
+                                <div class="text-[9.5px] font-bold uppercase tracking-wide text-gray-400 mb-1">Departments <span class="font-normal normal-case">(broad)</span></div>
+                                <div id="filter-departments-list" class="space-y-1 max-h-[160px] overflow-y-auto pr-1"></div>
+                            </div>
+                            <div>
+                                <div class="text-[9.5px] font-bold uppercase tracking-wide text-gray-400 mb-1">Categories <span class="font-normal normal-case">(narrow)</span></div>
+                                <div id="filter-categories-list" class="space-y-1 max-h-[160px] overflow-y-auto pr-1"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Price range filter -->
+                    <div class="filter-block">
+                        <button class="filter-block-toggle" onclick="toggleFilterBlock(this)">
+                            <span>Price Range</span><i class="ph ph-caret-up text-[11px]"></i>
+                        </button>
+                        <div class="filter-block-body">
+                            <div class="flex items-center gap-2 mb-3">
+                                <div class="price-input-box">
+                                    <span>GHS</span>
+                                    <input type="number" id="price-input-min" min="0" max="5000000" step="50" value="0" oninput="handlePriceInputChange('min')">
+                                </div>
+                                <span class="text-gray-300 text-[11px]">–</span>
+                                <div class="price-input-box">
+                                    <span>GHS</span>
+                                    <input type="number" id="price-input-max" min="0" max="5000000" step="50" value="5000000" oninput="handlePriceInputChange('max')">
+                                </div>
+                            </div>
+                            <div class="price-slider-wrap">
+                                <div class="price-slider-track-bg"></div>
+                                <div class="price-slider-track-fill" id="price-slider-fill"></div>
+                                <input type="range" id="price-slider-min" min="0" max="5000000" step="50" value="0" oninput="handlePriceSliderChange('min')">
+                                <input type="range" id="price-slider-max" min="0" max="5000000" step="50" value="5000000" oninput="handlePriceSliderChange('max')">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Delivery filter -->
+                    <div class="filter-block">
+                        <button class="filter-block-toggle" onclick="toggleFilterBlock(this)">
+                            <span>Delivery</span><i class="ph ph-caret-up text-[11px]"></i>
+                        </button>
+                        <div class="filter-block-body">
+                            <label class="filter-checkbox-row">
+                                <input type="checkbox" id="filter-free-delivery" onchange="handleFreeDeliveryToggle()">
+                                <span>Free Delivery</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button onclick="closeMobileFilters()" id="apply-filter-btn" class="apply-filter-btn w-full rounded-full py-2.5 text-[12px] font-bold transition" disabled>Apply Filter</button>
+                </aside>
+
+                <!-- Mobile filter toggle -->
+                <button onclick="openMobileFilters()" class="md:hidden fixed bottom-20 right-4 z-30 rounded-full w-12 h-12 flex items-center justify-center shadow-lg" style="background-color: var(--purple-main); color: #fff;">
+                    <i class="ph ph-faders-horizontal text-lg"></i>
+                </button>
+
+                <!-- Results -->
+                <div class="flex-1 min-w-0 space-y-6">
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3" id="search-results-grid"></div>
+
+                    <div id="search-pagination" class="flex items-center justify-center gap-1.5"></div>
+
+                    <!-- You may also like -->
+                    <section id="also-like-section" class="hidden space-y-3 pt-2">
+                        <div class="flex justify-between items-center">
+                            <h2 class="text-xs md:text-sm font-extrabold text-brand-purple tracking-tight">You may also like</h2>
+                        </div>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3" id="also-like-grid"></div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- Mobile filters overlay backdrop (sidebar itself becomes the drawer) -->
+            <div id="mobile-filters-overlay" class="hidden fixed inset-0 bg-black/40 z-40" onclick="closeMobileFilters()"></div>
+        </main>
+    </div>
+
+
+    <!-- ================= AD DETAILS VIEW ================= -->
+    <div id="ad-landing-view" class="hidden transition-opacity duration-300">
+        <main class="max-w-7xl mx-auto px-4 md:px-8 mt-4 space-y-5">
+
+            <!-- Breadcrumbs with Back integration -->
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center gap-1.5 text-[10px] text-gray-500">
+                    <span class="hover:text-brand-purple cursor-pointer" onclick="showHomepage()">Home</span>
+                    <i class="ph ph-caret-right text-[6px] text-gray-300"></i>
+                    <span class="hover:text-brand-purple cursor-pointer" id="detail-breadcrumb-category" onclick="location.href='categories.html?cat=' + encodeURIComponent(currentDetailProduct.category)"></span>
+                    <i class="ph ph-caret-right text-[6px] text-gray-300"></i>
+                    <span class="text-gray-900 font-medium" id="detail-breadcrumb-title"></span>
+                </div>
+
+                <button class="flex items-center gap-1.5 text-xs text-gray-600 hover:text-brand-purple font-medium">
+                    <i class="ph ph-share"></i> Share
+                </button>
+            </div>
+
+            <!-- Two Column Layout: Visuals & Mechanics -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+                <!-- Left: Interactive Gallery -->
+                <div class="lg:col-span-6 max-w-[480px] space-y-3">
+                    <!-- Main Image Window -->
+                    <div class="bg-brand-cardBg rounded-xl border border-gray-100 overflow-hidden relative shadow-sm">
+                        <span id="detail-sale-badge" class="absolute top-3 left-3 bg-red-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full z-10">Sale</span>
+                        <button onclick="toggleDetailWishlist()" class="absolute top-3 right-3 bg-brand-cardBg rounded-full w-7 h-7 flex items-center justify-center text-slate-700 hover:text-brand-purple shadow-md transition text-xs z-10">
+                            <i class="ph ph-heart" id="detail-heart-icon-main"></i>
+                        </button>
+
+                        <!-- Navigational Arrows -->
+                        <button onclick="stepDetailImage(-1)" id="detail-prev-btn" class="absolute left-2.5 top-1/2 -translate-y-1/2 bg-brand-cardBg rounded-full w-7 h-7 flex items-center justify-center shadow-md hover:bg-brand-cardBg z-10 text-gray-600 text-xs">
+                            <i class="ph ph-caret-left"></i>
+                        </button>
+                        <button onclick="stepDetailImage(1)" id="detail-next-btn" class="absolute right-2.5 top-1/2 -translate-y-1/2 bg-brand-cardBg rounded-full w-7 h-7 flex items-center justify-center shadow-md hover:bg-brand-cardBg z-10 text-gray-600 text-xs">
+                            <i class="ph ph-caret-right"></i>
+                        </button>
+
+                        <div class="aspect-square w-full bg-[#f6f6f6] overflow-hidden">
+                            <img id="main-detail-img" src="" alt="" class="w-full h-full object-cover">
+                        </div>
+
+                        <!-- Zoom Frame Icon -->
+                        <button onclick="openImageLightbox()" class="absolute bottom-3 right-3 bg-brand-cardBg rounded-md w-6 h-6 flex items-center justify-center shadow-md text-gray-500 text-[9px] hover:text-brand-purple transition">
+                            <i class="ph ph-arrows-out"></i>
+                        </button>
+                    </div>
+
+                    <!-- Gallery Thumbnails -->
+                    <div class="grid grid-cols-5 gap-2" id="detail-thumb-row"></div>
+                </div>
+
+                <!-- Right: Product Controls & Information -->
+                <div class="lg:col-span-6 space-y-4 bg-brand-cardBg p-5 rounded-xl border border-gray-100 shadow-sm">
+                    <div>
+                        <h1 class="text-lg md:text-xl font-extrabold text-gray-900 tracking-tight" id="detail-title"></h1>
+                        <div class="flex items-center gap-3 mt-1.5">
+                            <span class="flex items-center gap-1 text-yellow-500 text-[11px] font-bold">
+                                <i class="ph ph-fill ph-star"></i> <span id="detail-rating"></span>
+                            </span>
+                            <span class="text-[11px] text-brand-purple font-medium underline cursor-pointer" id="detail-review-count"></span>
+                            <span class="text-xs text-gray-400">•</span>
+                            <span class="text-[11px] text-gray-500 font-medium" id="detail-sold-count"></span>
+                        </div>
+                    </div>
+
+                    <!-- Pricing Info -->
+                    <div class="space-y-0.5">
+                        <div class="flex items-baseline gap-2.5">
+                            <span class="text-xl text-brand-purple" id="detail-current-price"></span>
+                            <span class="text-xs text-gray-400 line-through" id="detail-old-price" style="display:none;"></span>
+                            <span class="bg-red-50 text-red-500 text-[9px] font-bold px-1.5 py-0.5 rounded" id="detail-discount-chip" style="display:none;"></span>
+                        </div>
+                    </div>
+
+                    <!-- Product tags: admin-set, informational only — plain labels,
+                         never buttons/clickable. The delivery-vs-pickup choice itself
+                         happens at checkout; these just tell the shopper up front
+                         what's available and returnable for this specific product. -->
+                    <div class="flex flex-wrap gap-1.5" id="detail-product-tags"></div>
+
+                    <!-- Variant selectors: rendered dynamically per product. A product
+                         only gets a block here if an admin actually added that variant
+                         type (Color, Size, Storage, RAM, etc.) — nothing hardcoded. -->
+                    <div id="detail-variant-blocks" class="space-y-2.5"></div>
+
+                    <!-- Quantity Counter -->
+                    <div class="flex items-center gap-3">
+                        <span class="text-[11px] font-bold text-gray-800">Quantity</span>
+                        <div class="flex items-center border border-gray-300 rounded bg-brand-cardBg">
+                            <button onclick="changeDetailQty(-1)" class="px-2 py-0.5 text-gray-500 hover:text-black font-semibold">-</button>
+                            <span class="px-2.5 py-0.5 text-[11px] font-bold text-gray-800" id="detail-qty-value">1</span>
+                            <button onclick="changeDetailQty(1)" id="detail-qty-plus-btn" class="px-2 py-0.5 text-gray-500 hover:text-black font-semibold disabled:text-gray-300 disabled:cursor-not-allowed">+</button>
+                        </div>
+                        <span class="text-[10px] text-emerald-600 font-medium" id="detail-stock-label"></span>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="addDetailProductToCart()" class="border border-brand-purple text-brand-purple hover:bg-brand-purple/5 font-bold py-2.5 px-3 rounded-lg text-[11px] transition flex items-center justify-center gap-1.5">
+                            <i class="ph ph-shopping-cart"></i> Add To Cart
+                        </button>
+                        <button onclick="toggleDetailWishlist()" id="detail-wishlist-btn" class="border border-gray-200 hover:border-gray-300 text-gray-700 font-bold py-2.5 px-3 rounded-lg text-[11px] transition flex items-center justify-center gap-1.5">
+                            <i class="ph ph-heart" id="detail-wishlist-icon"></i> <span id="detail-wishlist-label">Add to Wishlist</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabbed Descriptions & Alternates -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-2">
+                <!-- Tabs and description copy -->
+                <div class="lg:col-span-7 bg-brand-cardBg rounded-xl border border-gray-100 p-5 shadow-sm space-y-3">
+                    <div class="flex border-b border-gray-100 pb-1 gap-5 overflow-x-auto no-scrollbar">
+                        <button onclick="selectDetailTab('description')" id="detail-tab-description" class="detail-tab-btn text-[11px] font-bold pb-2.5 whitespace-nowrap">Description</button>
+                        <button onclick="selectDetailTab('details')" id="detail-tab-details" class="detail-tab-btn text-[11px] font-medium pb-2.5 whitespace-nowrap">Product Details</button>
+                        <button onclick="selectDetailTab('reviews')" id="detail-tab-reviews" class="detail-tab-btn text-[11px] font-medium pb-2.5 whitespace-nowrap"></button>
+                    </div>
+                    <div class="space-y-3 text-[11px] text-gray-600 leading-relaxed">
+                        <p id="detail-pane-description"></p>
+                        <ul id="detail-pane-details" class="hidden list-disc pl-4 space-y-1"></ul>
+                        <div id="detail-pane-reviews" class="hidden space-y-4"></div>
+                    </div>
+                </div>
+
+                <!-- You May Also Like -->
+                <div class="lg:col-span-5 bg-brand-cardBg rounded-xl border border-gray-100 p-5 shadow-sm space-y-3" id="detail-related-section">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-[11px] font-bold text-gray-800">You May Also Like</h2>
+                        <a href="javascript:void(0)" onclick="location.href='categories.html?cat=' + encodeURIComponent(currentDetailProduct.category)" class="text-brand-purple font-bold text-[9px]">View all</a>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2.5" id="detail-related-grid"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ================= IMAGE LIGHTBOX ================= -->
+    <div id="image-lightbox" class="hidden fixed inset-0 z-[10000] bg-black/90 flex items-center justify-center p-4" onclick="if (event.target === this) closeImageLightbox()">
+        <button onclick="closeImageLightbox()" class="absolute top-4 right-4 md:top-6 md:right-6 text-white/80 hover:text-white w-10 h-10 flex items-center justify-center text-2xl">
+            <i class="ph ph-x"></i>
+        </button>
+        <button onclick="stepDetailImage(-1)" id="lightbox-prev-btn" class="absolute left-3 md:left-8 top-1/2 -translate-y-1/2 text-white/70 hover:text-white w-11 h-11 flex items-center justify-center text-2xl">
+            <i class="ph ph-caret-left"></i>
+        </button>
+        <img id="lightbox-img" src="" alt="" class="max-w-full max-h-full object-contain select-none">
+        <button onclick="stepDetailImage(1)" id="lightbox-next-btn" class="absolute right-3 md:right-8 top-1/2 -translate-y-1/2 text-white/70 hover:text-white w-11 h-11 flex items-center justify-center text-2xl">
+            <i class="ph ph-caret-right"></i>
+        </button>
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="showHomepage()">
+            <i class="ph ph-house"></i><span>Home</span>
+        </div>
+        <div class="nav-item" onclick="window.location.href='categories.html'">
+            <i class="ph ph-squares-four"></i><span>Categories</span>
+        </div>
+        <div class="nav-item" onclick="window.location.href='cart.html'">
+            <i class="ph ph-shopping-cart"></i>
+            <span class="nav-badge" id="nav-cart-badge"></span>
+            <span>Cart</span>
+        </div>
+        <div class="nav-item" onclick="window.location.href='wishlist.html'">
+            <i class="ph ph-bookmark-simple"></i><span>Wishlist</span>
+        </div>
+        <div class="nav-item" onclick="window.location.href='settings.html'">
+            <i class="ph ph-gear"></i><span>Settings</span>
+        </div>
+    </nav>
+
+    <!-- View Engine JavaScript -->
+    <script>
+        let currentDetailProduct = null;
+        let currentDetailQty = 1;
+        let currentDetailImgIndex = 0;
+        // Generic variant selection: { 'Color': 'Black', 'Size': '42', ... } —
+        // holds whatever variant types the current product actually has.
+        let currentDetailVariant = {};
+
+        /* ---------- hero carousel (auto-advancing trending-products slider) ---------- */
+        let heroSlides = [];
+        let heroIndex = 0;
+        let heroTimers = [];
+
+        function clearHeroTimers() {
+            heroTimers.forEach(t => clearTimeout(t));
+            heroTimers = [];
+        }
+
+        function heroTagline(product) {
+            if (product.saleLabel) return product.saleLabel;
+            if (Number(product.discountPercent) > 0) return `${product.discountPercent}% off today`;
+            return 'Handpicked for you';
+        }
+
+        function renderHeroDots() {
+            document.getElementById('hero-dots').innerHTML = heroSlides.map((_, i) =>
+                `<span class="hero-dot" onclick="event.stopPropagation(); jumpToHeroSlide(${i});"></span>`
+            ).join('');
+        }
+
+        function updateHeroDots() {
+            document.querySelectorAll('#hero-dots .hero-dot').forEach((dot, i) => {
+                dot.classList.toggle('active', i === heroIndex);
+            });
+        }
+
+        function playHeroSlide(index) {
+            clearHeroTimers();
+            if (!heroSlides.length) return;
+            heroIndex = index;
+            const product = heroSlides[heroIndex];
+
+            const titleEl = document.getElementById('hero-title');
+            const taglineEl = document.getElementById('hero-tagline');
+            const imageEl = document.getElementById('hero-image');
+            const textBlock = document.getElementById('hero-text-block');
+
+            titleEl.innerText = product.title;
+            taglineEl.innerText = heroTagline(product);
+            imageEl.src = product.images[0];
+            imageEl.alt = product.title;
+
+            updateHeroDots();
+
+            // Reset animation state, then force reflow so the "in" animation reliably restarts
+            imageEl.classList.remove('hero-anim-in', 'hero-anim-out');
+            textBlock.classList.remove('hero-anim-in', 'hero-anim-out');
+            void imageEl.offsetWidth;
+            imageEl.classList.add('hero-anim-in');
+            textBlock.classList.add('hero-anim-in');
+
+            const inDuration = 700;
+            const holdDuration = 10000;
+            const outDuration = 600;
+
+            heroTimers.push(setTimeout(() => {
+                imageEl.classList.remove('hero-anim-in');
+                imageEl.classList.add('hero-anim-out');
+                textBlock.classList.remove('hero-anim-in');
+                textBlock.classList.add('hero-anim-out');
+            }, inDuration + holdDuration));
+
+            heroTimers.push(setTimeout(() => {
+                playHeroSlide((heroIndex + 1) % heroSlides.length);
+            }, inDuration + holdDuration + outDuration));
+        }
+
+        function jumpToHeroSlide(index) {
+            playHeroSlide(index);
+        }
+
+        function initHeroCarousel() {
+            heroSlides = OpenAPI.getTrendingProducts(8);
+            if (!heroSlides.length) return;
+            renderHeroDots();
+            playHeroSlide(0);
+        }
+
+        function handleHeroBannerClick() {
+            if (heroSwiped) return; // a swipe just happened — don't also treat it as a tap-to-open
+            const product = heroSlides[heroIndex];
+            if (product) showAdLanding(product.productId);
+        }
+
+        /* ---------- hero banner: manual swipe/drag, for anyone who won't wait for the auto-advance ---------- */
+        let heroDragActive = false;
+        let heroDragStartX = 0;
+        let heroDragStartY = 0;
+        let heroSwiped = false;
+        const HERO_SWIPE_THRESHOLD = 40;
+
+        function goToNextHeroSlide() {
+            if (!heroSlides.length) return;
+            playHeroSlide((heroIndex + 1) % heroSlides.length);
+        }
+
+        function goToPrevHeroSlide() {
+            if (!heroSlides.length) return;
+            playHeroSlide((heroIndex - 1 + heroSlides.length) % heroSlides.length);
+        }
+
+        function initHeroSwipeGestures() {
+            const banner = document.getElementById('hero-banner');
+            if (!banner) return;
+
+            banner.addEventListener('pointerdown', (e) => {
+                heroDragActive = true;
+                heroSwiped = false;
+                heroDragStartX = e.clientX;
+                heroDragStartY = e.clientY;
+            });
+
+            banner.addEventListener('pointermove', (e) => {
+                if (!heroDragActive) return;
+                const dx = e.clientX - heroDragStartX;
+                const dy = e.clientY - heroDragStartY;
+                // Only treat it as a carousel swipe once the movement is clearly
+                // more horizontal than vertical, so normal page scrolling on
+                // mobile is never hijacked.
+                if (Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy)) {
+                    heroSwiped = true;
+                }
+            });
+
+            function endHeroDrag(e) {
+                if (!heroDragActive) return;
+                heroDragActive = false;
+                const endX = e.clientX !== undefined ? e.clientX : heroDragStartX;
+                const dx = endX - heroDragStartX;
+
+                if (Math.abs(dx) > HERO_SWIPE_THRESHOLD) {
+                    heroSwiped = true;
+                    if (dx < 0) goToNextHeroSlide();
+                    else goToPrevHeroSlide();
+                }
+
+                // Let the browser's own click event (which fires right after
+                // pointerup on the same element) see heroSwiped before it resets.
+                setTimeout(() => { heroSwiped = false; }, 0);
+            }
+
+            banner.addEventListener('pointerup', endHeroDrag);
+            banner.addEventListener('pointercancel', endHeroDrag);
+            banner.addEventListener('pointerleave', (e) => { if (heroDragActive) endHeroDrag(e); });
+        }
+
+        /* ---------- view switching ---------- */
+        function setActiveView(view) {
+            document.getElementById('homepage-view').classList.toggle('hidden', view !== 'home');
+            document.getElementById('search-view').classList.toggle('hidden', view !== 'search');
+            document.getElementById('ad-landing-view').classList.toggle('hidden', view !== 'product');
+
+            document.getElementById('header-logo').classList.toggle('hidden', view !== 'home');
+            document.getElementById('header-back').classList.toggle('hidden', view === 'home');
+            document.getElementById('header-back').classList.toggle('flex', view !== 'home');
+
+            if (view !== 'home') clearHeroTimers();
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showHomepage() {
+            history.pushState({}, '', 'home.html');
+            document.getElementById('search-input').value = '';
+            closeSearchPanel();
+            setActiveView('home');
+            renderHomeSections();
+        }
+
+        /* ---------- shared card builders (visual styles copied 1:1 from the original shelves/grids) ---------- */
+        function buildProductCardHTML(product, opts = {}) {
+            const { shelf = false } = opts;
+            const hasBadge = Number(product.discountPercent) > 0 || !!product.saleLabel;
+            const badgeLabel = product.saleLabel || `-${product.discountPercent}%`;
+            const badgeColor = product.saleLabel ? 'bg-orange-500' : 'bg-red-500';
+            const saved = OpenAPI.isWishlisted(product.productId);
+            const widthClass = shelf ? 'min-w-[150px] max-w-[150px]' : 'w-full';
+            return `
+                <div onclick="showAdLanding('${product.productId}')" class="${widthClass} bg-brand-cardBg rounded-xl border border-gray-150 shadow-sm hover:shadow-md transition overflow-hidden relative flex flex-col cursor-pointer">
+                    ${hasBadge ? `<span class="absolute top-1.5 left-1.5 ${badgeColor} text-white text-[8px] font-extrabold px-1 py-0.5 rounded z-10">${badgeLabel}</span>` : ''}
+                    <button onclick="event.stopPropagation(); quickToggleWishlist('${product.productId}', this)" class="absolute top-1.5 right-1.5 bg-brand-cardBg rounded-full w-6 h-6 flex items-center justify-center ${saved ? 'text-brand-purple' : 'text-slate-700'} hover:text-brand-purple shadow-sm transition text-[9px] z-10">
+                        <i class="ph ${saved ? 'ph-fill' : ''} ph-heart"></i>
+                    </button>
+                    <div class="aspect-square w-full overflow-hidden">
+                        <img src="${product.images[0]}" alt="${product.title}" class="object-cover w-full h-full">
+                    </div>
+                    <div class="p-2 space-y-0.5 flex-1 flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-[11px] text-gray-800 font-normal leading-tight line-clamp-1">${product.title}</h3>
+                            <div class="text-brand-purple text-xs mt-0.5">${OpenAPI.formatCurrencyHTML(product.price)}</div>
+                        </div>
+                        <div class="flex items-center pt-1 mt-0.5 text-[8px] text-gray-400">
+                            <span class="flex items-center gap-0.5 text-yellow-500 font-medium"><i class="ph ph-fill ph-star text-[7px]"></i> ${product.rating} <span class="text-gray-400 font-normal">(${OpenAPI.formatCount(product.reviewCount)})</span></span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function quickToggleWishlist(productId, el) {
+            if (!await OpenAPI.requireAuth()) return;
+            const nowSaved = OpenAPI.toggleWishlist(productId);
+            const icon = el.querySelector('i');
+            icon.classList.toggle('ph-fill', nowSaved);
+            el.classList.toggle('text-brand-purple', nowSaved);
+        }
+
+        /* ---------- shelf scroll arrows ---------- */
+        function initShelfArrows() {
+            document.querySelectorAll('.shelf-scroll-arrow').forEach(btn => {
+                const shelfId = btn.getAttribute('onclick').match(/'([^']+)'/)[1];
+                const shelf = document.getElementById(shelfId);
+                if (!shelf) return;
+
+                const hasOverflow = shelf.scrollWidth > shelf.clientWidth + 4;
+                btn.classList.toggle('hidden', !hasOverflow);
+
+                if (hasOverflow && !shelf.dataset.arrowBound) {
+                    shelf.dataset.arrowBound = 'true';
+                    let settleTimer = null;
+                    shelf.addEventListener('scroll', () => {
+                        btn.classList.add('hidden');
+                        clearTimeout(settleTimer);
+                        settleTimer = setTimeout(() => {
+                            if (shelf.scrollWidth > shelf.clientWidth + 4) {
+                                btn.classList.remove('hidden');
+                            }
+                        }, 600);
+                    });
+                }
+            });
+        }
+
+        function scrollShelf(shelfId) {
+            const shelf = document.getElementById(shelfId);
+            if (!shelf) return;
+
+            const firstCard = shelf.firstElementChild;
+            const cardWidth = firstCard ? firstCard.getBoundingClientRect().width : 150;
+            const gap = parseFloat(getComputedStyle(shelf).columnGap) || 12;
+            const step = cardWidth + gap;
+
+            const maxScrollLeft = shelf.scrollWidth - shelf.clientWidth;
+            if (shelf.scrollLeft >= maxScrollLeft - 2) {
+                // Already at (or effectively at) the end — loop back to the start.
+                shelf.scrollTo({ left: 0, behavior: 'smooth' });
+            } else {
+                shelf.scrollBy({ left: step, behavior: 'smooth' });
+            }
+        }
+
+        /* ---------- homepage sections ---------- */
+        function renderHomeSections() {
+            const products = OpenAPI.getAllProducts();
+
+            initHeroCarousel();
+
+            const rail = document.getElementById('home-category-rail');
+            rail.innerHTML = OpenAPI.getDepartments().map(dept => `
+                <div class="flex-shrink-0 w-12 h-12 rounded-full bg-white border border-[#ececec] shadow-[0_2px_8px_rgba(0,0,0,0.10)] flex items-center justify-center overflow-hidden hover:scale-105 transition cursor-pointer" onclick="location.href='categories.html?dept=' + encodeURIComponent('${dept.name.replace(/'/g, "\\'")}')" title="${dept.name}">
+                    <i class="ph ${dept.icon} text-lg text-brand-purple"></i>
+                </div>
+            `).join('');
+
+            const flashDeals = products.filter(p => Number(p.discountPercent) > 0).sort((a, b) => b.discountPercent - a.discountPercent);
+            document.getElementById('flash-deals-rail').innerHTML = flashDeals.map(p => buildProductCardHTML(p, { shelf: true })).join('');
+
+            const topDeals = products.slice().sort((a, b) => (b.discountPercent || 0) - (a.discountPercent || 0)).slice(0, 8);
+            document.getElementById('top-deals-grid').innerHTML = topDeals.map(p => buildProductCardHTML(p, { shelf: true })).join('');
+
+            const newArrivals = products.slice(-4).reverse();
+            document.getElementById('new-arrivals-grid').innerHTML = newArrivals.map(p => buildProductCardHTML(p)).join('');
+
+            const recommended = OpenAPI.getTrendingProducts(4);
+            document.getElementById('recommended-grid').innerHTML = recommended.map(p => buildProductCardHTML(p)).join('');
+
+            const recentlyViewed = OpenAPI.getRecentlyViewedProducts(8);
+            document.getElementById('recently-viewed-shelf').innerHTML = recentlyViewed.map(p => buildProductCardHTML(p, { shelf: true })).join('');
+            document.getElementById('recently-viewed-shelf').classList.toggle('hidden', recentlyViewed.length === 0);
+            document.getElementById('recently-viewed-empty').classList.toggle('hidden', recentlyViewed.length > 0);
+
+            initShelfArrows();
+        }
+
+        /* ---------- search / results state ---------- */
+        const PRICE_CEILING = 5000000;
+        const RESULTS_PAGE_SIZE = 12;
+
+        const searchState = {
+            title: '',
+            query: '',
+            baseProducts: [],       // unfiltered set for this view (search matches, or a curated list)
+            departments: new Set(), // selected department names (broad)
+            categories: new Set(),  // selected legacy category names (narrow)
+            minPrice: 0,
+            maxPrice: PRICE_CEILING,
+            freeDeliveryOnly: false,
+            sort: 'relevance',
+            page: 1,
+        };
+
+        // Loose text match — same approach api.js uses to link a department's
+        // categories/items to real products (there's no direct productId <-> department link).
+        function productMatchesDepartment(product, dept) {
+            const haystack = `${product.title} ${product.category} ${product.description || ''}`.toLowerCase();
+            return dept.categories.some(c =>
+                haystack.includes(c.name.toLowerCase()) || c.items.some(item => haystack.includes(item.toLowerCase()))
+            );
+        }
+
+        function getFilteredSortedProducts() {
+            let list = searchState.baseProducts.filter(p => {
+                if (searchState.categories.size && !searchState.categories.has(p.category)) return false;
+                if (searchState.departments.size) {
+                    const matchesAnySelectedDept = OpenAPI.getDepartments()
+                        .filter(d => searchState.departments.has(d.name))
+                        .some(d => productMatchesDepartment(p, d));
+                    if (!matchesAnySelectedDept) return false;
+                }
+                const price = Number(p.price) || 0;
+                if (price < searchState.minPrice || price > searchState.maxPrice) return false;
+                if (searchState.freeDeliveryOnly && Number(p.deliveryFee) > 0) return false;
+                return true;
+            });
+
+            switch (searchState.sort) {
+                case 'price-asc': list = list.slice().sort((a, b) => a.price - b.price); break;
+                case 'price-desc': list = list.slice().sort((a, b) => b.price - a.price); break;
+                case 'rating-desc': list = list.slice().sort((a, b) => b.rating - a.rating); break;
+                case 'newest': list = list.slice().reverse(); break;
+                default: break; // relevance = keep original order
+            }
+            return list;
+        }
+
+        function resetFiltersOnly() {
+            searchState.departments = new Set();
+            searchState.categories = new Set();
+            searchState.minPrice = 0;
+            searchState.maxPrice = PRICE_CEILING;
+            searchState.freeDeliveryOnly = false;
+            searchState.sort = 'relevance';
+            searchState.page = 1;
+        }
+
+        function showProductList(title, products) {
+            history.pushState({}, '', 'home.html');
+            searchState.title = title;
+            searchState.query = '';
+            searchState.baseProducts = products;
+            resetFiltersOnly();
+            setActiveView('search');
+            renderSearchView();
+        }
+
+        function runSearch() {
+            const query = document.getElementById('search-input').value;
+            if (!query.trim()) return;
+            OpenAPI.addSearchHistoryEntry(query);
+            const results = OpenAPI.searchProducts(query);
+
+            history.pushState({}, '', `home.html?search=${encodeURIComponent(query)}`);
+            searchState.title = '';
+            searchState.query = query;
+            searchState.baseProducts = results;
+            resetFiltersOnly();
+            setActiveView('search');
+            closeSearchPanel();
+            renderSearchView();
+        }
+
+        function renderSearchView() {
+            const filtered = getFilteredSortedProducts();
+
+            // Counter text
+            const counterEl = document.getElementById('search-results-counter');
+            counterEl.innerText = searchState.query
+                ? `${filtered.length} result${filtered.length !== 1 ? 's' : ''} for "${searchState.query}"`
+                : `${searchState.title} (${filtered.length})`;
+
+            syncSortDropdown();
+
+            renderFilterSidebar(filtered);
+
+            // Pagination slice
+            const totalPages = Math.max(1, Math.ceil(filtered.length / RESULTS_PAGE_SIZE));
+            if (searchState.page > totalPages) searchState.page = totalPages;
+            const start = (searchState.page - 1) * RESULTS_PAGE_SIZE;
+            const pageItems = filtered.slice(start, start + RESULTS_PAGE_SIZE);
+
+            document.getElementById('search-results-grid').innerHTML = pageItems.length
+                ? pageItems.map(p => buildProductCardHTML(p)).join('')
+                : `<p class="col-span-full text-center text-[11px] text-gray-400 py-10">No products match your filters. Try adjusting them.</p>`;
+
+            renderPagination(totalPages);
+            renderAlsoLike(filtered);
+        }
+
+        function renderPagination(totalPages) {
+            const el = document.getElementById('search-pagination');
+            if (totalPages <= 1) { el.innerHTML = ''; return; }
+            const cur = searchState.page;
+            let pills = `<button class="page-pill nav-arrow ${cur === 1 ? 'disabled' : ''}" onclick="goToPage(${cur - 1})"><i class="ph ph-caret-left" style="font-size:10px"></i></button>`;
+            for (let i = 1; i <= totalPages; i++) {
+                pills += `<button class="page-pill ${i === cur ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+            }
+            pills += `<button class="page-pill nav-arrow ${cur === totalPages ? 'disabled' : ''}" onclick="goToPage(${cur + 1})"><i class="ph ph-caret-right" style="font-size:10px"></i></button>`;
+            el.innerHTML = pills;
+        }
+
+        function goToPage(page) {
+            searchState.page = page;
+            renderSearchView();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // "You may also like" — trending picks that share a category with the
+        // current results but aren't already showing, so it always feels relevant
+        // whether the view came from a text search or a curated list link.
+        function renderAlsoLike(currentResults) {
+            const section = document.getElementById('also-like-section');
+            const shownIds = new Set(currentResults.map(p => p.productId));
+            const resultCategories = new Set(currentResults.map(p => p.category));
+
+            let picks = OpenAPI.getAllProducts()
+                .filter(p => !shownIds.has(p.productId) && resultCategories.has(p.category))
+                .sort((a, b) => (Number(b.soldCount) || 0) - (Number(a.soldCount) || 0))
+                .slice(0, 8);
+
+            if (picks.length < 4) {
+                const fallback = OpenAPI.getTrendingProducts(12).filter(p => !shownIds.has(p.productId) && !picks.some(x => x.productId === p.productId));
+                picks = picks.concat(fallback).slice(0, 8);
+            }
+
+            if (!picks.length) { section.classList.add('hidden'); return; }
+            section.classList.remove('hidden');
+            document.getElementById('also-like-grid').innerHTML = picks.map(p => buildProductCardHTML(p)).join('');
+        }
+
+        /* ---------- filter sidebar rendering ---------- */
+        function renderFilterSidebar(filteredForCounts) {
+            // Counts are computed against the full base set (pre-filter) so
+            // unchecking a box doesn't make its own count disappear.
+            const base = searchState.baseProducts;
+
+            const deptListEl = document.getElementById('filter-departments-list');
+            const deptsWithCounts = OpenAPI.getDepartments()
+                .map(d => ({ dept: d, count: base.filter(p => productMatchesDepartment(p, d)).length }))
+                .filter(x => x.count > 0)
+                .sort((a, b) => b.count - a.count);
+            deptListEl.innerHTML = deptsWithCounts.map(({ dept, count }) => `
+                <label class="filter-checkbox-row">
+                    <input type="checkbox" ${searchState.departments.has(dept.name) ? 'checked' : ''} onchange="toggleDepartmentFilter('${dept.name.replace(/'/g, "\\'")}')">
+                    <span>${dept.name}</span><span class="count">${count}</span>
+                </label>
+            `).join('') || `<p class="text-[11px] text-gray-400">No matches</p>`;
+
+            const catListEl = document.getElementById('filter-categories-list');
+            const catCounts = {};
+            base.forEach(p => { catCounts[p.category] = (catCounts[p.category] || 0) + 1; });
+            const catsSorted = Object.keys(catCounts).sort((a, b) => catCounts[b] - catCounts[a]);
+            catListEl.innerHTML = catsSorted.map(cat => `
+                <label class="filter-checkbox-row">
+                    <input type="checkbox" ${searchState.categories.has(cat) ? 'checked' : ''} onchange="toggleCategoryFilter('${cat.replace(/'/g, "\\'")}')">
+                    <span>${cat}</span><span class="count">${catCounts[cat]}</span>
+                </label>
+            `).join('') || `<p class="text-[11px] text-gray-400">No matches</p>`;
+
+            document.getElementById('filter-free-delivery').checked = searchState.freeDeliveryOnly;
+            syncPriceControls();
+            updateApplyFilterButtonState();
+        }
+
+        // Apply Filter starts greyed out and only lights up once the user has
+        // actually changed something from the default (cleared) filter state.
+        function updateApplyFilterButtonState() {
+            const isDirty =
+                searchState.departments.size > 0 ||
+                searchState.categories.size > 0 ||
+                searchState.freeDeliveryOnly ||
+                searchState.minPrice > 0 ||
+                searchState.maxPrice < PRICE_CEILING;
+            document.getElementById('apply-filter-btn').disabled = !isDirty;
+        }
+
+        function toggleDepartmentFilter(name) {
+            searchState.departments.has(name) ? searchState.departments.delete(name) : searchState.departments.add(name);
+            searchState.page = 1;
+            renderSearchView();
+        }
+
+        function toggleCategoryFilter(name) {
+            searchState.categories.has(name) ? searchState.categories.delete(name) : searchState.categories.add(name);
+            searchState.page = 1;
+            renderSearchView();
+        }
+
+        function handleFreeDeliveryToggle() {
+            searchState.freeDeliveryOnly = document.getElementById('filter-free-delivery').checked;
+            searchState.page = 1;
+            renderSearchView();
+        }
+
+        const SORT_LABELS = {
+            'relevance': 'Relevance',
+            'price-asc': 'Price: Low to High',
+            'price-desc': 'Price: High to Low',
+            'rating-desc': 'Highest Rated',
+            'newest': 'Newest',
+        };
+
+        function toggleSortDropdown() {
+            const dropdown = document.getElementById('sort-dropdown');
+            const menu = document.getElementById('sort-select-menu');
+            const opening = menu.classList.contains('hidden');
+            menu.classList.toggle('hidden');
+            dropdown.classList.toggle('open', opening);
+        }
+
+        function chooseSortOption(value) {
+            searchState.sort = value;
+            document.getElementById('sort-select-menu').classList.add('hidden');
+            document.getElementById('sort-dropdown').classList.remove('open');
+            renderSearchView();
+        }
+
+        function syncSortDropdown() {
+            document.getElementById('sort-select-label').innerText = SORT_LABELS[searchState.sort] || 'Relevance';
+            document.querySelectorAll('#sort-select-menu .custom-select-option').forEach(opt => {
+                opt.classList.toggle('selected', opt.dataset.value === searchState.sort);
+            });
+        }
+
+        document.addEventListener('click', (e) => {
+            const dropdown = document.getElementById('sort-dropdown');
+            if (dropdown && !dropdown.contains(e.target)) {
+                document.getElementById('sort-select-menu').classList.add('hidden');
+                dropdown.classList.remove('open');
+            }
+        });
+
+        function clearAllFilters() {
+            resetFiltersOnly();
+            renderSearchView();
+        }
+
+        function toggleFilterBlock(btn) {
+            btn.parentElement.classList.toggle('collapsed');
+        }
+
+        function openMobileFilters() {
+            document.getElementById('mobile-filters-overlay').classList.remove('hidden');
+            document.getElementById('filters-sidebar').classList.add('filters-mobile-open');
+            document.getElementById('filters-sidebar').classList.remove('hidden');
+        }
+        function closeMobileFilters() {
+            document.getElementById('mobile-filters-overlay').classList.add('hidden');
+            document.getElementById('filters-sidebar').classList.remove('filters-mobile-open');
+            document.getElementById('filters-sidebar').classList.add('hidden');
+        }
+
+        /* ---------- price range slider ---------- */
+        function syncPriceControls() {
+            document.getElementById('price-input-min').value = searchState.minPrice;
+            document.getElementById('price-input-max').value = searchState.maxPrice;
+            document.getElementById('price-slider-min').value = searchState.minPrice;
+            document.getElementById('price-slider-max').value = searchState.maxPrice;
+            const fill = document.getElementById('price-slider-fill');
+            const leftPct = (searchState.minPrice / PRICE_CEILING) * 100;
+            const rightPct = (searchState.maxPrice / PRICE_CEILING) * 100;
+            fill.style.left = leftPct + '%';
+            fill.style.width = (rightPct - leftPct) + '%';
+        }
+
+        function handlePriceSliderChange(which) {
+            let min = Number(document.getElementById('price-slider-min').value);
+            let max = Number(document.getElementById('price-slider-max').value);
+            if (which === 'min' && min > max) min = max;
+            if (which === 'max' && max < min) max = min;
+            searchState.minPrice = min;
+            searchState.maxPrice = max;
+            searchState.page = 1;
+            renderSearchView();
+        }
+
+        function handlePriceInputChange(which) {
+            let min = Number(document.getElementById('price-input-min').value) || 0;
+            let max = Number(document.getElementById('price-input-max').value) || 0;
+            min = Math.max(0, Math.min(min, PRICE_CEILING));
+            max = Math.max(0, Math.min(max, PRICE_CEILING));
+            if (which === 'min' && min > max) min = max;
+            if (which === 'max' && max < min) max = min;
+            searchState.minPrice = min;
+            searchState.maxPrice = max;
+            searchState.page = 1;
+            renderSearchView();
+        }
+
+        /* ---------- search suggestions / recent searches dropdown ---------- */
+        // escapeHtml() is defined elsewhere in this file (reviews code) — reused here too.
+
+        // Bolds the part of a product title that matches what's been typed so
+        // far — the "guessing" effect the search bar is meant to give.
+        function highlightMatch(title, query) {
+            const idx = title.toLowerCase().indexOf(query.toLowerCase());
+            if (idx === -1) return escapeHtml(title);
+            const before = escapeHtml(title.slice(0, idx));
+            const match = escapeHtml(title.slice(idx, idx + query.length));
+            const after = escapeHtml(title.slice(idx + query.length));
+            return `${before}<mark>${match}</mark>${after}`;
+        }
+
+        let searchKbIndex = -1;
+
+        function getSearchPanelRows() {
+            return Array.from(document.querySelectorAll('#search-suggest-panel .search-recent-row, #search-suggest-panel .search-suggest-product-row'));
+        }
+
+        function setSearchKbIndex(newIndex) {
+            const rows = getSearchPanelRows();
+            if (!rows.length) { searchKbIndex = -1; return; }
+            rows.forEach(r => r.classList.remove('kb-active'));
+            searchKbIndex = ((newIndex % rows.length) + rows.length) % rows.length;
+            const active = rows[searchKbIndex];
+            active.classList.add('kb-active');
+            active.scrollIntoView({ block: 'nearest' });
+        }
+
+        function renderRecentSearchesPanel() {
+            const panel = document.getElementById('search-suggest-panel');
+            searchKbIndex = -1;
+            const history = OpenAPI.getSearchHistory();
+            if (!history.length) {
+                panel.classList.add('hidden');
+                panel.innerHTML = '';
+                return;
+            }
+            panel.innerHTML = `
+                <div class="search-suggest-section-label">
+                    <span>Recent Searches</span>
+                    <span class="search-suggest-clear-all" onclick="clearAllRecentSearches(event)">Clear All</span>
+                </div>
+                ${history.map(term => `
+                    <div class="search-recent-row" onclick="selectRecentSearch('${escapeHtml(term).replace(/'/g, "\\'")}')">
+                        <i class="ph ph-clock-counter-clockwise"></i>
+                        <span class="term">${escapeHtml(term)}</span>
+                        <i class="ph ph-x remove-x" onclick="event.stopPropagation(); removeRecentSearch('${escapeHtml(term).replace(/'/g, "\\'")}')"></i>
+                    </div>
+                `).join('')}
+            `;
+            panel.classList.remove('hidden');
+        }
+
+        function renderSuggestionsPanel(query) {
+            const panel = document.getElementById('search-suggest-panel');
+            searchKbIndex = -1;
+            const matches = OpenAPI.getSearchSuggestions(query, 6);
+            if (!matches.length) {
+                panel.innerHTML = `<div class="search-suggest-empty">No matching products yet.</div>`;
+                panel.classList.remove('hidden');
+                return;
+            }
+            panel.innerHTML = matches.map(title => `
+                <div class="search-suggest-product-row" onclick="selectSuggestedKeyword('${escapeHtml(title).replace(/'/g, "\\'")}')">
+                    <i class="ph ph-magnifying-glass"></i>
+                    <span class="title">${highlightMatch(title, query)}</span>
+                </div>
+            `).join('');
+            panel.classList.remove('hidden');
+        }
+
+        function handleSearchInput() {
+            const query = document.getElementById('search-input').value;
+            if (query.trim()) {
+                renderSuggestionsPanel(query);
+            } else {
+                renderRecentSearchesPanel();
+            }
+        }
+
+        function handleSearchFocus() {
+            handleSearchInput();
+        }
+
+        function handleSearchKeydown(e) {
+            const panel = document.getElementById('search-suggest-panel');
+            const panelOpen = !panel.classList.contains('hidden');
+
+            if (e.key === 'ArrowDown') {
+                if (!panelOpen) return;
+                e.preventDefault();
+                setSearchKbIndex(searchKbIndex + 1);
+            } else if (e.key === 'ArrowUp') {
+                if (!panelOpen) return;
+                e.preventDefault();
+                setSearchKbIndex(searchKbIndex - 1);
+            } else if (e.key === 'Enter') {
+                if (panelOpen && searchKbIndex >= 0) {
+                    e.preventDefault();
+                    getSearchPanelRows()[searchKbIndex].click();
+                } else {
+                    runSearch();
+                }
+            } else if (e.key === 'Escape') {
+                closeSearchPanel();
+                document.getElementById('search-input').blur();
+            }
+        }
+
+        function closeSearchPanel() {
+            const panel = document.getElementById('search-suggest-panel');
+            panel.classList.add('hidden');
+            searchKbIndex = -1;
+        }
+
+        function selectRecentSearch(term) {
+            document.getElementById('search-input').value = term;
+            runSearch();
+        }
+
+        function removeRecentSearch(term) {
+            OpenAPI.removeSearchHistoryEntry(term);
+            renderRecentSearchesPanel();
+        }
+
+        function clearAllRecentSearches(e) {
+            e.stopPropagation();
+            OpenAPI.clearSearchHistory();
+            renderRecentSearchesPanel();
+        }
+
+        function selectSuggestedKeyword(term) {
+            document.getElementById('search-input').value = term;
+            runSearch();
+        }
+
+        document.addEventListener('click', (e) => {
+            const wrapper = document.getElementById('search-bar-wrapper');
+            if (wrapper && !wrapper.contains(e.target)) closeSearchPanel();
+        });
+
+        /* ---------- product detail (Ad Landing) ---------- */
+        function showAdLanding(productId) {
+            const product = OpenAPI.getProductById(productId);
+            if (!product) return;
+            currentDetailProduct = product;
+            currentDetailQty = 1;
+            currentDetailImgIndex = 0;
+            OpenAPI.recordProductView(productId);
+
+            history.pushState({}, '', `home.html?product=${productId}`);
+            setActiveView('product');
+
+            document.getElementById('detail-breadcrumb-category').innerText = product.category;
+            document.getElementById('detail-breadcrumb-title').innerText = product.title;
+
+            renderDetailImage();
+            document.getElementById('detail-thumb-row').innerHTML = product.images.map((img, i) => `
+                <button onclick="currentDetailImgIndex=${i}; renderDetailImage();" class="aspect-square rounded-lg border-2 ${i === 0 ? 'border-brand-purple' : 'border-gray-200'} overflow-hidden bg-gray-50">
+                    <img src="${img}" class="w-full h-full object-cover">
+                </button>
+            `).join('');
+            document.getElementById('detail-prev-btn').style.display = product.images.length > 1 ? 'flex' : 'none';
+            document.getElementById('detail-next-btn').style.display = product.images.length > 1 ? 'flex' : 'none';
+
+            const hasBadge = Number(product.discountPercent) > 0 || !!product.saleLabel;
+            document.getElementById('detail-sale-badge').style.display = hasBadge ? 'inline-block' : 'none';
+            document.getElementById('detail-sale-badge').innerText = product.saleLabel || 'Sale';
+
+            document.getElementById('detail-title').innerText = product.title;
+            document.getElementById('detail-rating').innerText = product.rating;
+            document.getElementById('detail-review-count').innerText = `(${OpenAPI.formatCount(product.reviewCount)} reviews)`;
+            document.getElementById('detail-tab-reviews').innerText = `Reviews (${OpenAPI.getProductReviews(product.productId).length})`;
+            document.getElementById('detail-sold-count').innerText = `${OpenAPI.formatCount(product.soldCount || 0)} sold`;
+
+            const hasDiscount = Number(product.discountPercent) > 0;
+            const originalPrice = hasDiscount ? Math.round(product.price / (1 - product.discountPercent / 100)) : null;
+            document.getElementById('detail-current-price').innerHTML = OpenAPI.formatCurrencyHTML(product.price);
+            document.getElementById('detail-old-price').style.display = hasDiscount ? 'inline' : 'none';
+            if (hasDiscount) document.getElementById('detail-old-price').innerHTML = OpenAPI.formatCurrencyHTML(originalPrice);
+            document.getElementById('detail-discount-chip').style.display = hasDiscount ? 'inline-block' : 'none';
+            if (hasDiscount) document.getElementById('detail-discount-chip').innerText = `${product.discountPercent}% OFF`;
+
+            const tagToneClasses = {
+                neutral: 'bg-gray-100 text-gray-600',
+                positive: 'bg-emerald-50 text-emerald-600',
+                negative: 'bg-red-50 text-red-500',
+            };
+            document.getElementById('detail-product-tags').innerHTML = OpenAPI.getProductTags(product).map(tag => `
+                <span class="inline-flex items-center gap-1 text-[10px] font-semibold px-2.5 py-1 rounded-full ${tagToneClasses[tag.tone] || tagToneClasses.neutral}">
+                    <i class="ph ${tag.icon} text-[11px]"></i>${escapeHtml(tag.label)}
+                </span>
+            `).join('');
+
+            document.getElementById('detail-qty-value').innerText = currentDetailQty;
+            document.getElementById('detail-pane-description').innerText = product.description || '';
+
+            const overallStock = Number(product.stock) || 0;
+            const detailFacts = [
+                `Category: ${product.category}`,
+                `Rating: ${product.rating} out of 5`,
+                overallStock > 0 ? `Stock: ${overallStock} units available` : 'Currently out of stock',
+                `Delivery: ${OpenAPI.formatDeliveryLabel(product)}`,
+            ];
+            document.getElementById('detail-pane-details').innerHTML = detailFacts.map(f => `<li>${f}</li>`).join('');
+            renderReviewsTab(product);
+
+            selectDetailTab('description');
+            // Fresh product view starts with no variant chosen yet — render
+            // picks the defaults, then the stock/qty UI reflects them.
+            currentDetailVariant = {};
+            currentDetailQty = 1;
+            renderDetailVariantOptions();
+            updateDetailStockAndQtyUI();
+            refreshDetailWishlistButtons();
+
+            const related = OpenAPI.getProductsByCategory(product.category).filter(p => p.productId !== product.productId).slice(0, 4);
+            document.getElementById('detail-related-section').style.display = related.length ? 'block' : 'none';
+            document.getElementById('detail-related-grid').innerHTML = related.map(p => buildProductCardHTML(p)).join('');
+        }
+
+        /* ---------- reviews tab ---------- */
+        let currentReviewFormRating = 0;
+        let currentReviewPhotoDataUrl = null;
+        let editingReviewId = null;
+
+        function openPhotoLightbox(src) {
+            document.getElementById('photo-lightbox-img').src = src;
+            document.getElementById('photo-lightbox').classList.add('open');
+        }
+
+        function closePhotoLightbox() {
+            document.getElementById('photo-lightbox').classList.remove('open');
+        }
+
+        function escapeHtml(str) {
+            // Escapes quotes too, not just &/</> — this function's output gets
+            // embedded inside HTML attributes (e.g. onclick="...('${...}')"),
+            // and a raw " or ' in the source text (like a product's 15.6"
+            // screen size) would otherwise prematurely close that attribute
+            // and corrupt the markup.
+            return String(str).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        }
+
+        function buildStarsMarkup(rating) {
+            const r = Number(rating) || 0;
+            let html = '';
+            for (let i = 1; i <= 5; i++) {
+                if (r >= i) html += '<i class="ph ph-fill ph-star"></i>';
+                else if (r >= i - 0.5) html += '<i class="ph ph-fill ph-star-half"></i>';
+                else html += '<i class="ph ph-star"></i>';
+            }
+            return html;
+        }
+
+        function renderReviewsTab(product) {
+            currentReviewFormRating = 0;
+            currentReviewPhotoDataUrl = null;
+            editingReviewId = null;
+
+            const written = OpenAPI.getProductReviews(product.productId);
+            const breakdown = OpenAPI.getReviewBreakdown(product.productId);
+            const myKey = OpenAPI.getCurrentIdentityKey();
+
+            const summaryHTML = `
+                <div class="flex flex-col sm:flex-row gap-6 sm:items-center border-b border-gray-100 pb-4">
+                    <div class="review-score-block">
+                        <div class="review-score-number">${product.rating}</div>
+                        <div class="review-score-stars">${buildStarsMarkup(product.rating)}</div>
+                        <div class="review-score-sub">out of 5</div>
+                        <div class="review-score-sub count">Based on ${written.length} review${written.length !== 1 ? 's' : ''}</div>
+                    </div>
+                    <div class="flex-1 w-full">
+                        ${[5, 4, 3, 2, 1].map(star => `
+                            <div class="review-breakdown-row">
+                                <span class="star-label">${star} <i class="ph ph-fill ph-star"></i></span>
+                                <div class="review-bar-track"><div class="review-bar-fill" style="width:${breakdown.percentages[star]}%"></div></div>
+                                <span class="pct">${breakdown.percentages[star]}%</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            const formHTML = `
+                <div class="border border-gray-100 rounded-xl p-4 space-y-3">
+                    <div>
+                        <h4 class="text-[12px] font-bold text-gray-800" id="review-form-title">Write a Review</h4>
+                        <p class="text-[10.5px] text-gray-400" id="review-form-subtitle">Share your experience with this product</p>
+                    </div>
+                    <div>
+                        <div class="text-[11px] font-semibold text-gray-700 mb-1.5">Your Rating</div>
+                        <div class="review-star-picker" id="review-star-picker">
+                            ${[1, 2, 3, 4, 5].map(n => `<i class="ph ph-star" data-star="${n}" onclick="selectFormStar(${n})"></i>`).join('')}
+                        </div>
+                        <div class="text-[10px] text-gray-400 mt-1" id="review-star-hint">Click on a star to rate</div>
+                    </div>
+                    <div>
+                        <div class="text-[11px] font-semibold text-gray-700 mb-1.5">Your Review</div>
+                        <textarea id="review-text-input" class="review-textarea" maxlength="500" placeholder="Write your review here..." oninput="updateReviewCharCount()"></textarea>
+                        <div class="text-right text-[10px] text-gray-400 mt-1"><span id="review-char-count">0</span>/500</div>
+                    </div>
+                    <div id="review-photo-preview-wrap" class="hidden">
+                        <img id="review-photo-preview" class="review-card-photo" src="" alt="Attached photo" onclick="openPhotoLightbox(document.getElementById('review-photo-preview').src)">
+                    </div>
+                    <div class="flex items-center justify-between gap-3 flex-wrap">
+                        <button type="button" class="review-photo-btn" onclick="document.getElementById('review-photo-input').click()"><i class="ph ph-image"></i> Add Photo (optional)</button>
+                        <input type="file" id="review-photo-input" accept="image/*" class="hidden" onchange="handleReviewPhotoChange(event)">
+                        <div class="flex items-center gap-3">
+                            <button type="button" class="text-[11px] font-semibold text-gray-400 hidden" id="review-cancel-edit-btn" onclick="cancelEditReview()">Cancel</button>
+                            <button type="button" class="review-submit-btn" id="review-submit-btn" onclick="submitProductReview()">Submit Review</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const listHTML = written.length === 0 ? `
+                <div class="review-empty-state">
+                    <i class="ph ph-chat-circle-dots"></i>
+                    <h4>No reviews yet</h4>
+                    <p>Be the first to review this product!</p>
+                </div>
+            ` : written.map(r => `
+                <div class="review-card">
+                    <div class="review-card-header">
+                        <div class="flex gap-2.5">
+                            <img src="${r.avatar}" class="review-card-avatar" alt="${r.name}">
+                            <div>
+                                <div class="review-card-name">${r.name}</div>
+                                <div class="review-card-stars">${buildStarsMarkup(r.rating)}</div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="review-card-date">${r.date}</div>
+                            ${r.edited ? '<div class="review-card-edited-tag">(edited)</div>' : ''}
+                        </div>
+                    </div>
+                    <div class="review-card-text">${escapeHtml(r.text)}</div>
+                    ${r.photo ? `<img src="${r.photo}" class="review-card-photo" alt="Review photo" onclick="openPhotoLightbox('${r.photo}')">` : ''}
+                    ${r.authorKey === myKey ? `
+                        <div class="review-card-actions">
+                            <button onclick="startEditReview('${r.id}')"><i class="ph ph-pencil-simple"></i> Edit</button>
+                            <button class="delete-action" onclick="deleteOwnReview('${r.id}')"><i class="ph ph-trash"></i> Delete</button>
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+
+            document.getElementById('detail-pane-reviews').innerHTML = summaryHTML + formHTML + `<div class="review-list space-y-4">${listHTML}</div>`;
+        }
+
+        function selectFormStar(n) {
+            currentReviewFormRating = n;
+            document.querySelectorAll('#review-star-picker i').forEach(icon => {
+                const starNum = Number(icon.dataset.star);
+                icon.className = starNum <= n ? 'ph ph-fill ph-star' : 'ph ph-star';
+            });
+            document.getElementById('review-star-hint').innerText = `You rated this ${n} star${n !== 1 ? 's' : ''}`;
+        }
+
+        function updateReviewCharCount() {
+            const text = document.getElementById('review-text-input').value;
+            document.getElementById('review-char-count').innerText = text.length;
+        }
+
+        function resizeImageFile(file, maxDimension = 800, quality = 0.72) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        let { width, height } = img;
+                        if (width > height && width > maxDimension) {
+                            height = Math.round(height * (maxDimension / width));
+                            width = maxDimension;
+                        } else if (height > maxDimension) {
+                            width = Math.round(width * (maxDimension / height));
+                            height = maxDimension;
+                        }
+                        const canvas = document.createElement('canvas');
+                        canvas.width = width;
+                        canvas.height = height;
+                        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+                        resolve(canvas.toDataURL('image/jpeg', quality));
+                    };
+                    img.onerror = reject;
+                    img.src = e.target.result;
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        async function handleReviewPhotoChange(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            try {
+                currentReviewPhotoDataUrl = await resizeImageFile(file);
+                document.getElementById('review-photo-preview').src = currentReviewPhotoDataUrl;
+                document.getElementById('review-photo-preview-wrap').classList.remove('hidden');
+            } catch (err) {
+                await OpenAPI.showAlert('Could not process that image. Please try a different photo.', { title: 'Image error' });
+            }
+        }
+
+        function startEditReview(reviewId) {
+            const reviews = OpenAPI.getProductReviews(currentDetailProduct.productId);
+            const review = reviews.find(r => r.id === reviewId);
+            if (!review) return;
+
+            editingReviewId = reviewId;
+            currentReviewPhotoDataUrl = review.photo || null;
+
+            document.getElementById('review-text-input').value = review.text;
+            updateReviewCharCount();
+            selectFormStar(review.rating);
+
+            if (review.photo) {
+                document.getElementById('review-photo-preview').src = review.photo;
+                document.getElementById('review-photo-preview-wrap').classList.remove('hidden');
+            }
+
+            document.getElementById('review-form-title').innerText = 'Edit Your Review';
+            document.getElementById('review-form-subtitle').innerText = 'Update your rating or what you wrote';
+            document.getElementById('review-submit-btn').innerText = 'Update Review';
+            document.getElementById('review-cancel-edit-btn').classList.remove('hidden');
+
+            document.getElementById('review-form-title').closest('.border').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function cancelEditReview() {
+            editingReviewId = null;
+            currentReviewFormRating = 0;
+            currentReviewPhotoDataUrl = null;
+
+            document.getElementById('review-text-input').value = '';
+            updateReviewCharCount();
+            selectFormStar(0);
+            document.getElementById('review-star-hint').innerText = 'Click on a star to rate';
+            document.getElementById('review-photo-preview-wrap').classList.add('hidden');
+
+            document.getElementById('review-form-title').innerText = 'Write a Review';
+            document.getElementById('review-form-subtitle').innerText = 'Share your experience with this product';
+            document.getElementById('review-submit-btn').innerText = 'Submit Review';
+            document.getElementById('review-cancel-edit-btn').classList.add('hidden');
+        }
+
+        async function deleteOwnReview(reviewId) {
+            const confirmed = await OpenAPI.showConfirm('Delete this review? This cannot be undone.', { title: 'Delete Review' });
+            if (!confirmed) return;
+
+            OpenAPI.deleteProductReview(currentDetailProduct.productId, reviewId);
+            renderReviewsTab(currentDetailProduct);
+            document.getElementById('detail-tab-reviews').innerText = `Reviews (${OpenAPI.getProductReviews(currentDetailProduct.productId).length})`;
+        }
+
+        async function submitProductReview() {
+            if (!await OpenAPI.requireAuth()) return;
+
+            const text = document.getElementById('review-text-input').value.trim();
+
+            if (currentReviewFormRating === 0) {
+                await OpenAPI.showAlert('Please select a star rating before submitting.', { title: 'Rating required' });
+                return;
+            }
+            if (!text) {
+                await OpenAPI.showAlert('Please write a few words about your experience.', { title: 'Review required' });
+                return;
+            }
+
+            let result;
+            if (editingReviewId) {
+                result = OpenAPI.updateProductReview(currentDetailProduct.productId, editingReviewId, {
+                    rating: currentReviewFormRating,
+                    text,
+                    photo: currentReviewPhotoDataUrl,
+                });
+            } else {
+                result = OpenAPI.addProductReview(currentDetailProduct.productId, {
+                    rating: currentReviewFormRating,
+                    text,
+                    photo: currentReviewPhotoDataUrl,
+                });
+            }
+
+            if (!result) {
+                await OpenAPI.showAlert("This couldn't be saved — local storage is full. Try removing the photo or freeing up space (e.g. deleting an old review with a photo).", { title: 'Save failed' });
+                return;
+            }
+
+            renderReviewsTab(currentDetailProduct);
+            document.getElementById('detail-tab-reviews').innerText = `Reviews (${OpenAPI.getProductReviews(currentDetailProduct.productId).length})`;
+        }
+
+        function selectDetailTab(tab) {
+            ['description', 'details', 'reviews'].forEach(name => {
+                const btn = document.getElementById(`detail-tab-${name}`);
+                const pane = document.getElementById(`detail-pane-${name}`);
+                const active = name === tab;
+                btn.classList.toggle('text-brand-purple', active);
+                btn.classList.toggle('border-b-2', active);
+                btn.classList.toggle('border-brand-purple', active);
+                btn.classList.toggle('text-gray-400', !active);
+                pane.classList.toggle('hidden', !active);
+            });
+        }
+
+        // Renders one block per variant type the admin actually added to this
+        // product (Color, Size, Storage, RAM — whatever). A product with no
+        // variants renders nothing here at all: no empty selector boxes.
+        function renderDetailVariantOptions() {
+            const product = currentDetailProduct;
+            const container = document.getElementById('detail-variant-blocks');
+            const types = OpenAPI.getProductVariantTypes(product);
+
+            if (!types.length) {
+                currentDetailVariant = {};
+                container.innerHTML = '';
+                return;
+            }
+
+            // Default to the first value of each type, same as before, but
+            // now for however many variant types this product has.
+            types.forEach(type => {
+                if (!currentDetailVariant[type.name] || !type.values.includes(currentDetailVariant[type.name])) {
+                    currentDetailVariant[type.name] = type.values[0];
+                }
+            });
+
+            container.innerHTML = types.map(type => `
+                <div class="space-y-1.5">
+                    <span class="text-[11px] font-bold text-gray-800">Choose ${escapeHtml(type.name)}</span>
+                    <div class="flex gap-2 flex-wrap variant-options-row" data-variant-type="${escapeHtml(type.name)}">
+                        ${type.values.map(value => {
+                            // Since every other type already has a default/selected
+                            // value, this combination is always fully specified —
+                            // so per-combination stock can be checked directly.
+                            const trialSelection = { ...currentDetailVariant, [type.name]: value };
+                            const outOfStock = !OpenAPI.isVariantComboInStock(product, trialSelection);
+                            const active = currentDetailVariant[type.name] === value;
+                            const safeValue = value.replace(/'/g, "\\'");
+                            const safeType = type.name.replace(/'/g, "\\'");
+                            return `
+                                <button type="button"
+                                    ${outOfStock ? 'disabled' : `onclick="selectDetailVariant('${safeType}', '${safeValue}')"`}
+                                    data-value="${escapeHtml(value)}"
+                                    class="variant-option-btn flex items-center gap-1 px-2.5 py-1 border rounded-lg text-[11px] font-semibold transition ${outOfStock ? 'opacity-40 cursor-not-allowed line-through border-gray-200 text-gray-400' : (active ? 'border-brand-purple bg-brand-purple/5 text-brand-purple' : 'border-gray-200 text-gray-600 hover:border-gray-400')}">
+                                    ${escapeHtml(value)} ${active && !outOfStock ? '<i class="ph ph-fill ph-check-circle text-[8px] text-brand-purple"></i>' : ''}${outOfStock ? '<span class="text-[8px]">Out of stock</span>' : ''}
+                                </button>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function selectDetailVariant(typeName, value) {
+            currentDetailVariant[typeName] = value;
+            currentDetailQty = 1;
+            renderDetailVariantOptions();
+            updateDetailStockAndQtyUI();
+        }
+
+        // Keeps the "X in stock" label and the qty stepper's + button in sync
+        // with whatever variant combination (if any) is currently selected.
+        function updateDetailStockAndQtyUI() {
+            const product = currentDetailProduct;
+            const stock = OpenAPI.getVariantComboStock(product, currentDetailVariant);
+            document.getElementById('detail-stock-label').innerText = stock > 0 ? `${stock} in stock` : 'Out of stock';
+            document.getElementById('detail-qty-value').innerText = currentDetailQty;
+            const maxQty = OpenAPI.getMaxPurchaseQty(product, currentDetailVariant);
+            document.getElementById('detail-qty-plus-btn').disabled = currentDetailQty >= maxQty;
+        }
+
+        function renderDetailImage() {
+            document.getElementById('main-detail-img').src = currentDetailProduct.images[currentDetailImgIndex];
+            document.querySelectorAll('#detail-thumb-row button').forEach((btn, i) => {
+                btn.classList.toggle('border-brand-purple', i === currentDetailImgIndex);
+                btn.classList.toggle('border-gray-200', i !== currentDetailImgIndex);
+            });
+            const lightbox = document.getElementById('image-lightbox');
+            if (lightbox && !lightbox.classList.contains('hidden')) {
+                document.getElementById('lightbox-img').src = currentDetailProduct.images[currentDetailImgIndex];
+            }
+        }
+
+        function openImageLightbox() {
+            if (!currentDetailProduct) return;
+            document.getElementById('lightbox-img').src = currentDetailProduct.images[currentDetailImgIndex];
+            const multiple = currentDetailProduct.images.length > 1;
+            document.getElementById('lightbox-prev-btn').style.display = multiple ? 'flex' : 'none';
+            document.getElementById('lightbox-next-btn').style.display = multiple ? 'flex' : 'none';
+            document.getElementById('image-lightbox').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeImageLightbox() {
+            document.getElementById('image-lightbox').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        document.addEventListener('keydown', (e) => {
+            const lightbox = document.getElementById('image-lightbox');
+            if (!lightbox || lightbox.classList.contains('hidden')) return;
+            if (e.key === 'Escape') closeImageLightbox();
+            else if (e.key === 'ArrowLeft') stepDetailImage(-1);
+            else if (e.key === 'ArrowRight') stepDetailImage(1);
+        });
+
+        function stepDetailImage(delta) {
+            const len = currentDetailProduct.images.length;
+            currentDetailImgIndex = (currentDetailImgIndex + delta + len) % len;
+            renderDetailImage();
+        }
+
+        function changeDetailQty(delta) {
+            const maxQty = OpenAPI.getMaxPurchaseQty(currentDetailProduct, currentDetailVariant);
+            currentDetailQty = Math.max(1, Math.min(maxQty, currentDetailQty + delta));
+            updateDetailStockAndQtyUI();
+        }
+
+        async function addDetailProductToCart() {
+            if (!await OpenAPI.requireAuth()) return;
+            if (!OpenAPI.isVariantComboInStock(currentDetailProduct, currentDetailVariant)) {
+                await OpenAPI.showAlert('That combination is currently out of stock. Please choose a different option.', { title: 'Out of Stock' });
+                return;
+            }
+            OpenAPI.addToCart(currentDetailProduct.productId, currentDetailQty, currentDetailVariant);
+            OpenAPI.refreshCartNavBadge();
+            const variantBits = OpenAPI.formatVariantLabel(currentDetailVariant);
+            await OpenAPI.showAlert(`${currentDetailProduct.title}${variantBits ? ` (${variantBits})` : ''} added to your cart.`, { title: 'Added to Cart', iconKind: 'success' });
+        }
+
+        function refreshDetailWishlistButtons() {
+            const saved = OpenAPI.isWishlisted(currentDetailProduct.productId);
+            const mainIcon = document.getElementById('detail-heart-icon-main');
+            mainIcon.classList.toggle('ph-fill', saved);
+            mainIcon.parentElement.classList.toggle('text-brand-purple', saved);
+
+            const icon = document.getElementById('detail-wishlist-icon');
+            const label = document.getElementById('detail-wishlist-label');
+            const btn = document.getElementById('detail-wishlist-btn');
+            icon.classList.toggle('ph-fill', saved);
+            btn.classList.toggle('text-brand-purple', saved);
+            btn.classList.toggle('border-brand-purple', saved);
+            label.innerText = saved ? 'Saved to Wishlist' : 'Add to Wishlist';
+        }
+
+        async function toggleDetailWishlist() {
+            if (!await OpenAPI.requireAuth()) return;
+            OpenAPI.toggleWishlist(currentDetailProduct.productId);
+            refreshDetailWishlistButtons();
+        }
+
+        // Live Countdown Clock Engine
+        function startCountdown() {
+            let totalSeconds = (2 * 3600) + (45 * 60) + 30;
+
+            setInterval(() => {
+                if (totalSeconds <= 0) {
+                    totalSeconds = (3 * 3600);
+                }
+                totalSeconds--;
+
+                const hrs = Math.floor(totalSeconds / 3600);
+                const mins = Math.floor((totalSeconds % 3600) / 60);
+                const secs = totalSeconds % 60;
+
+                document.getElementById('hours-box').textContent = String(hrs).padStart(2, '0');
+                document.getElementById('mins-box').textContent = String(mins).padStart(2, '0');
+                document.getElementById('secs-box').textContent = String(secs).padStart(2, '0');
+            }, 1000);
+        }
+
+        window.onload = function() {
+            startCountdown();
+            OpenAPI.refreshCartNavBadge();
+            initHeroSwipeGestures();
+            const params = new URLSearchParams(window.location.search);
+            const productId = params.get('product');
+            const searchQuery = params.get('search');
+            if (productId && OpenAPI.getProductById(productId)) {
+                showAdLanding(productId);
+            } else if (searchQuery) {
+                document.getElementById('search-input').value = searchQuery;
+                runSearch();
+            } else {
+                renderHomeSections();
+            }
+        }
+    </script>
+
+    <!-- Photo lightbox (used by review photos) -->
+    <div id="photo-lightbox" class="photo-lightbox-overlay" onclick="closePhotoLightbox()">
+        <button onclick="closePhotoLightbox()" class="absolute top-4 right-4 text-white text-lg w-9 h-9 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition">
+            <i class="ph ph-x"></i>
+        </button>
+        <img id="photo-lightbox-img" src="" alt="Review photo" class="max-w-full max-h-full rounded-lg" onclick="event.stopPropagation()">
+    </div>
+
+</body>
+</html>
