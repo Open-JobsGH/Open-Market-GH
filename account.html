@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open Market | Edit Profile</title>
+    <link rel="icon" type="image/x-icon" href="icons and images/Open Favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script>
+        if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark-theme');
+    </script>
+    <style>
+        :root {
+            --purple-main: #500e8c;
+            --bg-light: #ffffff; --bg-search: #f1f2f6; --text-dark: #500e8c; --text-body: #1a1a1a;
+            --text-muted: #8e8e93; --border-card: #f2f2f7; --card-sub-bg: #ffffff;
+        }
+        .dark-theme {
+            --purple-main: #a370db;
+            --bg-light: #121212; --bg-search: #2a2a2a; --text-dark: #b689e6; --text-body: #f3f4f6;
+            --text-muted: #9ca3af; --border-card: rgba(255,255,255,0.08); --card-sub-bg: #1e1e1e;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+
+        /* ---------- Custom purple scrollbars (site-wide) ---------- */
+        * { scrollbar-width: thin; scrollbar-color: var(--purple-main) transparent; }
+        *::-webkit-scrollbar { width: 6px; height: 6px; }
+        *::-webkit-scrollbar-track { background: transparent; }
+        *::-webkit-scrollbar-thumb { background-color: var(--purple-main); border-radius: 10px; }
+        *::-webkit-scrollbar-thumb:hover { background-color: var(--purple-text-title, var(--purple-hover, var(--purple-main))); }
+        body { background-color: var(--bg-light); color: var(--text-body); min-height: 100vh; }
+        .app-container { min-height: 100vh; max-width: 480px; margin: 0 auto; padding: 20px 20px 60px; }
+        @media (min-width: 700px) {
+            .app-container { max-width: 620px; padding: 28px 32px 70px; }
+        }
+        @media (min-width: 1000px) {
+            .app-container { max-width: 760px; padding: 36px 40px 80px; }
+        }
+        @media (min-width: 1440px) {
+            .app-container { max-width: 880px; padding: 44px 40px 90px; }
+        }
+
+        .header-row { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
+        .back-btn { background: none; border: none; font-size: 20px; color: var(--purple-main); cursor: pointer; display: flex; }
+        .header-row h1 { flex: 1; text-align: center; font-size: 16px; font-weight: 700; color: var(--text-dark); margin-right: 20px; }
+
+        .profile-pic-section { display: flex; flex-direction: column; align-items: center; margin-bottom: 24px; position: relative; }
+        .avatar-container { width: 96px; height: 96px; border-radius: 50%; overflow: hidden; border: 2px solid var(--purple-main); background: var(--bg-search); }
+        .avatar-container img { width: 100%; height: 100%; object-fit: cover; }
+        .edit-pic-btn {
+            position: absolute; bottom: 26px; right: calc(50% - 48px); background: var(--purple-main); color: #fff;
+            border: none; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; cursor: pointer; font-size: 13px;
+        }
+        .profile-pic-section p { margin-top: 10px; font-size: 14px; font-weight: 700; color: var(--text-body); }
+
+        .section-title { font-size: 11px; color: var(--text-muted); margin: 18px 0 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+
+        .input-group { display: flex; flex-direction: column; margin-bottom: 12px; }
+        .input-group label { font-size: 12px; color: var(--text-muted); margin-bottom: 5px; font-weight: 500; }
+        .input-group input {
+            padding: 12px 14px; border: 1px solid var(--border-card); border-radius: 12px; font-size: 13.5px;
+            outline: none; background-color: var(--bg-search); color: var(--text-body); font-family: inherit;
+        }
+        .input-group input:focus { border-color: var(--purple-main); }
+        .input-group input[readonly] { opacity: 0.65; cursor: not-allowed; }
+
+        .verify-item {
+            display: flex; align-items: center; justify-content: space-between; padding: 13px 14px;
+            border: 1px solid var(--border-card); border-radius: 12px; margin-bottom: 10px; cursor: pointer;
+            background: var(--card-sub-bg);
+        }
+        .verify-left { display: flex; align-items: center; gap: 10px; font-size: 13.5px; color: var(--text-body); }
+        .verify-left i { font-size: 17px; color: var(--purple-main); }
+        .verify-right { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); }
+
+        .verify-input-box {
+            background: var(--bg-search); padding: 12px; border-radius: 12px;
+            border: 1px dashed var(--border-card); margin-top: -4px; margin-bottom: 10px;
+        }
+        .verify-input-box input {
+            width: 100%; padding: 10px; border: 1px solid var(--border-card); border-radius: 8px;
+            outline: none; font-size: 13px; background-color: var(--card-sub-bg); color: var(--text-body); font-family: inherit;
+        }
+
+        .hidden { display: none !important; }
+
+        .save-btn {
+            width: 100%; background-color: var(--purple-main); color: #fff; border: none; padding: 14px;
+            border-radius: 30px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 22px; font-family: inherit;
+        }
+        .save-btn:disabled { background-color: var(--border-card); color: var(--text-muted); cursor: not-allowed; }
+
+        .error-message { display: none; color: #e0293e; font-size: 12px; margin-top: 5px; font-weight: 500; }
+        .success-message { display: none; color: #2e9e5b; font-size: 13px; margin-top: 16px; text-align: center; font-weight: 700; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="header-row">
+        <button class="back-btn" onclick="window.location.href='settings.html'"><i class="ph ph-caret-left"></i></button>
+        <h1>Edit Profile</h1>
+    </div>
+
+    <div class="profile-pic-section">
+        <div class="avatar-container"><img id="profile-img" src="" alt="Profile picture" loading="lazy"></div>
+        <button class="edit-pic-btn" id="upload-trigger"><i class="ph ph-pencil-simple"></i></button>
+        <input type="file" id="file-input" accept="image/*" class="hidden">
+        <p id="profile-name">Loading...</p>
+    </div>
+
+    <form id="editProfileForm">
+        <div class="section-title">Identity</div>
+        <div class="input-group">
+            <label for="input-name">Full Name</label>
+            <input type="text" id="input-name" required placeholder="Enter your full name">
+        </div>
+        <div class="input-group">
+            <label for="input-username">Username</label>
+            <input type="text" id="input-username" placeholder="Choose a username">
+        </div>
+
+        <div class="section-title">Security &amp; Contact</div>
+
+        <div class="verify-item" onclick="toggleVerify('email-box')">
+            <div class="verify-left"><i class="ph ph-envelope-simple"></i><span>Email Address</span></div>
+            <div class="verify-right"><span id="label-email">Loading...</span><i class="ph ph-caret-down"></i></div>
+        </div>
+        <div id="email-box" class="verify-input-box hidden">
+            <input type="email" id="input-email" readonly>
+        </div>
+
+        <div class="verify-item" onclick="toggleVerify('phone-box')">
+            <div class="verify-left"><i class="ph ph-phone"></i><span>Telephone Number</span></div>
+            <div class="verify-right"><span id="label-phone">Not Linked</span><i class="ph ph-caret-down"></i></div>
+        </div>
+        <div id="phone-box" class="verify-input-box hidden">
+            <input type="tel" id="input-phone" placeholder="Enter phone number (+233...)">
+        </div>
+
+        <div class="verify-item" onclick="toggleVerify('password-box')">
+            <div class="verify-left"><i class="ph ph-lock"></i><span>Change Password</span></div>
+            <div class="verify-right"><span>••••••••</span><i class="ph ph-caret-down"></i></div>
+        </div>
+        <div id="password-box" class="verify-input-box hidden">
+            <div class="input-group" style="margin-bottom: 8px;">
+                <input type="password" id="old-pass" placeholder="Current Password">
+                <div class="error-message" id="oldPassError">❌ Current password is incorrect.</div>
+            </div>
+            <div class="input-group" style="margin-bottom: 8px;">
+                <input type="password" id="new-pass" placeholder="New Password">
+                <div class="error-message" id="passError">❌ Password must be at least 8 characters and include a capital letter, a special character (@#$%!&amp;*), and a number.</div>
+            </div>
+            <div class="input-group" style="margin-bottom: 0;">
+                <input type="password" id="confirm-new-pass" placeholder="Confirm New Password">
+                <div class="error-message" id="matchError">❌ New passwords do not match.</div>
+            </div>
+        </div>
+
+        <div class="success-message" id="successMsg">Changes saved successfully!</div>
+        <button type="submit" class="save-btn" id="save-btn" disabled>Save Changes</button>
+    </form>
+</div>
+
+<script src="api.js?v=3"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const session = OpenAPI.getSession();
+    if (!session) {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    const currentUser = OpenAPI.getCurrentUser();
+
+    const profileImg = document.getElementById('profile-img');
+    const profileName = document.getElementById('profile-name');
+    const inputName = document.getElementById('input-name');
+    const inputUsername = document.getElementById('input-username');
+    const labelEmail = document.getElementById('label-email');
+    const inputEmail = document.getElementById('input-email');
+    const labelPhone = document.getElementById('label-phone');
+    const inputPhone = document.getElementById('input-phone');
+
+    const form = document.getElementById('editProfileForm');
+    const oldPassInput = document.getElementById('old-pass');
+    const newPassInput = document.getElementById('new-pass');
+    const confirmPassInput = document.getElementById('confirm-new-pass');
+    const oldPassError = document.getElementById('oldPassError');
+    const passError = document.getElementById('passError');
+    const matchError = document.getElementById('matchError');
+    const successMsg = document.getElementById('successMsg');
+
+    if (currentUser) {
+        profileName.innerText = currentUser.name || 'User Profile';
+        inputName.value = currentUser.name || '';
+        inputUsername.value = currentUser.username || '';
+        labelEmail.innerText = currentUser.email;
+        inputEmail.value = currentUser.email;
+        if (currentUser.phone) {
+            labelPhone.innerText = currentUser.phone;
+            inputPhone.value = currentUser.phone;
+        }
+        profileImg.src = OpenAPI.getAvatarUrl(currentUser);
+    }
+
+    const saveBtn = document.getElementById('save-btn');
+    const initialSnapshot = {
+        name: inputName.value,
+        username: inputUsername.value,
+        phone: inputPhone.value,
+        profilePic: profileImg.src,
+    };
+
+    function checkDirty() {
+        const changed =
+            inputName.value !== initialSnapshot.name ||
+            inputUsername.value !== initialSnapshot.username ||
+            inputPhone.value !== initialSnapshot.phone ||
+            profileImg.src !== initialSnapshot.profilePic ||
+            oldPassInput.value !== '' ||
+            newPassInput.value !== '' ||
+            confirmPassInput.value !== '';
+        saveBtn.disabled = !changed;
+    }
+
+    [inputName, inputUsername, inputPhone, oldPassInput, newPassInput, confirmPassInput].forEach(el => {
+        el.addEventListener('input', checkDirty);
+    });
+
+    const fileInput = document.getElementById('file-input');
+    document.getElementById('upload-trigger').addEventListener('click', (e) => {
+        e.preventDefault();
+        fileInput.click();
+    });
+    fileInput.addEventListener('change', function() {
+        const file = this.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => { profileImg.src = e.target.result; checkDirty(); };
+        reader.readAsDataURL(file);
+    });
+
+    const validatePassword = OpenAPI.validatePassword;
+
+    oldPassInput.addEventListener('input', () => oldPassError.style.display = 'none');
+    newPassInput.addEventListener('input', () => passError.style.display = 'none');
+    confirmPassInput.addEventListener('input', () => matchError.style.display = 'none');
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        oldPassError.style.display = 'none';
+        passError.style.display = 'none';
+        matchError.style.display = 'none';
+        successMsg.style.display = 'none';
+
+        if (!currentUser) return;
+
+        const updates = {
+            name: inputName.value.trim(),
+            username: inputUsername.value.trim(),
+            phone: inputPhone.value.trim(),
+            profilePic: profileImg.src,
+        };
+
+        if (newPassInput.value !== '') {
+            if (oldPassInput.value !== currentUser.password) {
+                oldPassError.style.display = 'block';
+                oldPassInput.focus();
+                return;
+            }
+            if (!validatePassword(newPassInput.value)) {
+                passError.style.display = 'block';
+                newPassInput.focus();
+                return;
+            }
+            if (newPassInput.value !== confirmPassInput.value) {
+                matchError.style.display = 'block';
+                confirmPassInput.focus();
+                return;
+            }
+            updates.password = newPassInput.value;
+        }
+
+        const updatedUser = OpenAPI.updateUser(session.email, updates);
+        profileName.innerText = updatedUser.name;
+        if (updatedUser.phone) labelPhone.innerText = updatedUser.phone;
+
+        successMsg.style.display = 'block';
+        oldPassInput.value = '';
+        newPassInput.value = '';
+        confirmPassInput.value = '';
+
+        initialSnapshot.name = inputName.value;
+        initialSnapshot.username = inputUsername.value;
+        initialSnapshot.phone = inputPhone.value;
+        initialSnapshot.profilePic = profileImg.src;
+        saveBtn.disabled = true;
+    });
+});
+
+function toggleVerify(id) {
+    document.getElementById(id).classList.toggle('hidden');
+}
+</script>
+</body>
+</html>
