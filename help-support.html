@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open Market | Help &amp; Support</title>
+    <link rel="icon" type="image/x-icon" href="icons and images/Open Favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script>
+        if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark-theme');
+    </script>
+    <style>
+        :root {
+            --purple-main: #500e8c;
+            --link-color: #500e8c;
+            --bg-light: #ffffff; --bg-search: #f1f2f6; --text-dark: #500e8c; --text-body: #1a1a1a;
+            --text-muted: #8e8e93; --border-card: #f2f2f7; --card-sub-bg: #ffffff;
+        }
+        .dark-theme {
+            --purple-main: #a370db;
+            --link-color: #c9a6f0;
+            --bg-light: #121212; --bg-search: #2a2a2a; --text-dark: #b689e6; --text-body: #f3f4f6;
+            --text-muted: #9ca3af; --border-card: rgba(255,255,255,0.08); --card-sub-bg: #1e1e1e;
+        }
+        /* Inline links (e.g. inside FAQ answers) would otherwise fall back to
+           the browser's default blue/visited-purple, which is hard to read
+           against a dark background and doesn't follow the theme at all. */
+        a { color: var(--link-color); text-decoration: underline; }
+        a:visited { color: var(--link-color); }
+        a:hover { opacity: 0.85; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+
+        /* ---------- Custom purple scrollbars (site-wide) ---------- */
+        * { scrollbar-width: thin; scrollbar-color: var(--purple-main) transparent; }
+        *::-webkit-scrollbar { width: 6px; height: 6px; }
+        *::-webkit-scrollbar-track { background: transparent; }
+        *::-webkit-scrollbar-thumb { background-color: var(--purple-main); border-radius: 10px; }
+        *::-webkit-scrollbar-thumb:hover { background-color: var(--purple-hover, var(--purple-main)); }
+
+        body { background-color: var(--bg-light); color: var(--text-body); min-height: 100vh; }
+        .app-container { min-height: 100vh; max-width: 480px; margin: 0 auto; padding: 20px 20px 60px; }
+        @media (min-width: 700px) {
+            .app-container { max-width: 620px; padding: 28px 32px 70px; }
+        }
+        @media (min-width: 1000px) {
+            .app-container { max-width: 760px; padding: 36px 40px 80px; }
+        }
+        @media (min-width: 1440px) {
+            .app-container { max-width: 880px; padding: 44px 40px 90px; }
+        }
+
+        .header-row { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
+        .back-btn { background: none; border: none; font-size: 20px; color: var(--purple-main); cursor: pointer; display: flex; }
+        .header-row h1 { flex: 1; text-align: center; font-size: 16px; font-weight: 700; color: var(--text-dark); margin-right: 20px; }
+
+        .section-title { font-size: 11px; color: var(--text-muted); margin: 18px 0 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+
+        .contact-list {
+            display: flex; flex-direction: column; background: var(--card-sub-bg);
+            border: 1px solid var(--border-card); border-radius: 16px; overflow: hidden;
+        }
+        .contact-item {
+            display: flex; align-items: center; gap: 14px; padding: 14px 16px; cursor: pointer;
+        }
+        .contact-item:not(:last-child) { border-bottom: 1px solid var(--border-card); }
+        .contact-icon-box {
+            width: 36px; height: 36px; border-radius: 50%; background: var(--bg-search);
+            display: flex; align-items: center; justify-content: center; color: var(--purple-main); font-size: 17px; flex-shrink: 0;
+        }
+        .contact-text .label { font-size: 13.5px; font-weight: 600; color: var(--text-body); }
+        .contact-text .value { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
+
+        .faq-list { display: flex; flex-direction: column; gap: 10px; }
+        .faq-search-wrap {
+            position: relative; margin-bottom: 6px;
+        }
+        .faq-search-wrap i {
+            position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 14px;
+        }
+        .faq-search-wrap input {
+            width: 100%; padding: 11px 14px 11px 38px; border: 1px solid var(--border-card); border-radius: 30px;
+            font-size: 13px; background: var(--bg-search); color: var(--text-body); outline: none; font-family: inherit;
+        }
+        .faq-search-wrap input:focus { border-color: var(--purple-main); }
+        .faq-item {
+            background: var(--card-sub-bg); border: 1px solid var(--border-card); border-radius: 14px;
+            overflow: hidden;
+        }
+        .faq-question {
+            display: flex; align-items: center; justify-content: space-between; gap: 10px;
+            padding: 14px 16px; cursor: pointer; font-size: 13.5px; font-weight: 600; color: var(--text-body);
+        }
+        .faq-question i { color: var(--purple-main); font-size: 16px; transition: transform 0.2s ease; flex-shrink: 0; }
+        .faq-item.open .faq-question i { transform: rotate(180deg); }
+        .faq-answer {
+            max-height: 0; overflow: hidden; transition: max-height 0.25s ease;
+            font-size: 12.5px; line-height: 1.6; color: var(--text-muted);
+        }
+        .faq-item.open .faq-answer { max-height: 200px; }
+        .faq-answer-inner { padding: 0 16px 16px; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="header-row">
+        <button class="back-btn" onclick="window.location.href='settings.html'"><i class="ph ph-caret-left"></i></button>
+        <h1>Help &amp; Support</h1>
+    </div>
+
+    <div class="section-title">Support Center</div>
+    <div class="contact-list" style="margin-bottom: 4px;">
+        <div class="contact-item" onclick="window.location.href='support-center.html'">
+            <div class="contact-icon-box"><i class="ph ph-headset"></i></div>
+            <div class="contact-text">
+                <div class="label">Visit the Support Center</div>
+                <div class="value">General enquiries · Become a Member · Report a Bug · Feature Request</div>
+            </div>
+            <i class="ph ph-caret-right" style="margin-left:auto;color:var(--text-muted);font-size:14px;"></i>
+        </div>
+    </div>
+
+    <div class="section-title">Contact Us</div>
+    <div class="contact-list">
+        <div class="contact-item" data-contact="email">
+            <div class="contact-icon-box"><i class="ph ph-envelope-simple"></i></div>
+            <div class="contact-text">
+                <div class="label">Email Support</div>
+                <div class="value">support@openmarket.com.gh</div>
+            </div>
+        </div>
+        <div class="contact-item" data-contact="phone">
+            <div class="contact-icon-box"><i class="ph ph-phone"></i></div>
+            <div class="contact-text">
+                <div class="label">Call Us</div>
+                <div class="value">+233 302 000 000 · Mon–Sat, 8am–6pm</div>
+            </div>
+        </div>
+        <div class="contact-item" data-contact="chat">
+            <div class="contact-icon-box"><i class="ph ph-chat-circle-dots"></i></div>
+            <div class="contact-text">
+                <div class="label">Live Chat</div>
+                <div class="value">Coming soon</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-title">Frequently Asked Questions</div>
+    <div class="faq-search-wrap">
+        <i class="ph ph-magnifying-glass"></i>
+        <input type="text" id="faq-search-input" placeholder="Search FAQs..." oninput="renderFaqList()">
+    </div>
+    <div id="faq-container"></div>
+</div>
+
+<script src="api.js?v=3"></script>
+<script>
+    // Each answer may contain simple <a href="..."> links to other pages
+    // (Settings, Support Center, Return & Refund Policy, etc.) where relevant.
+    const FAQ_DATA = [
+        { cat: 'Account', q: 'Do I need an account to shop on Open Market?', a: 'Yes. An Open Market account is required to browse products, place orders, track purchases, manage your delivery information, and access your account settings.' },
+        { cat: 'Account', q: 'Can I shop as a guest?', a: 'No. Guest shopping is currently not available. All customers must create an account before placing an order.' },
+        { cat: 'Account', q: 'I forgot my password. What should I do?', a: 'Click <a href="forgot-password.html">Forgot Password</a> on the sign-in page and follow the instructions to reset your password.' },
+        { cat: 'Account', q: 'Can I change my email address?', a: 'Yes. You can update your email address from your <a href="account.html">Account Settings</a>.' },
+        { cat: 'Account', q: 'Can I change my username?', a: 'Yes. Usernames can be changed once every 30 days.' },
+        { cat: 'Account', q: 'Can I delete my account?', a: 'Yes. You can permanently delete your account using the Delete Account option in the <a href="settings.html">Settings</a> page.' },
+
+        { cat: 'Orders', q: 'How do I place an order?', a: 'Browse products, add them to your cart, proceed to checkout, select your delivery or self-pickup option, complete payment, and confirm your order.' },
+        { cat: 'Orders', q: 'How do I know if my order was successful?', a: 'Once payment is confirmed, you\'ll receive an Order ID and your order will appear in <a href="orders.html">My Orders</a>.' },
+        { cat: 'Orders', q: 'Can I cancel my order?', a: 'Yes, but only within 24 hours of placing your order and before it has been processed. Once an order has entered processing, it cannot be cancelled.' },
+        { cat: 'Orders', q: 'Where can I view my order history?', a: 'All your previous and current orders can be found under <a href="orders.html">My Orders</a>.' },
+        { cat: 'Orders', q: 'Can I order multiple quantities of the same product?', a: 'Yes. However, you cannot order more than the available stock, and certain products may have purchase limits.' },
+
+        { cat: 'Products', q: 'Does Open Market sell products from other people?', a: 'Open Market carefully selects products from trusted manufacturers, distributors, and local retail shops. Regardless of where a product is sourced, your purchase is made through Open Market.' },
+        { cat: 'Products', q: 'Are your products genuine?', a: 'We strive to source quality products from trusted suppliers and retail partners.' },
+        { cat: 'Products', q: 'What if a product becomes unavailable after I place an order?', a: 'If your product becomes unavailable before shipment, we\'ll contact you and offer an appropriate solution, including a refund where applicable.' },
+        { cat: 'Products', q: 'Why do some products become out of stock?', a: 'Product availability depends on inventory levels and supplier availability. Popular products may sell out before they are restocked.' },
+
+        { cat: 'Delivery', q: 'Where does Open Market deliver?', a: 'We currently deliver anywhere we can within Ghana. However, delivery may not yet be available in some deep rural areas.' },
+        { cat: 'Delivery', q: 'Do you offer self-pickup?', a: 'Yes. Customers may choose Self Pickup at one of our designated pickup agent locations during checkout.' },
+        { cat: 'Delivery', q: 'What do I need to collect my order from a pickup location?', a: 'Simply provide your full name and your Order ID. No payment is required at pickup because all orders must be paid for before checkout.' },
+        { cat: 'Delivery', q: 'How long does delivery take?', a: 'Delivery times vary depending on your location, product availability and order volume. Estimated delivery information will be provided whenever possible.' },
+        { cat: 'Delivery', q: 'Can I change my delivery address?', a: 'You may update your saved delivery address if you have no ongoing or pending orders. Once an order has been placed and is being processed, the delivery address cannot be changed.' },
+        { cat: 'Delivery', q: 'What happens if I\'m unavailable when my order arrives?', a: 'Please ensure that you or someone you trust is available to receive your order. Anyone collecting the order on your behalf must know your full name and Order ID. If a delivery attempt fails because no one is available, your package will be dropped off at the nearest Open Market pickup agent location for self-pickup. If you prefer to have the package re-delivered, an additional re-delivery fee will apply.' },
+        { cat: 'Delivery', q: 'How much does delivery cost?', a: 'Delivery fees, where applicable, are automatically calculated during checkout based on your delivery location.' },
+
+        { cat: 'Payments', q: 'What payment methods do you accept?', a: 'Available payment methods are displayed during checkout.' },
+        { cat: 'Payments', q: 'Is online payment secure?', a: 'Yes. We use secure payment technology to protect your payment information.' },
+        { cat: 'Payments', q: 'Can I pay on delivery?', a: 'No. All orders must be paid for before they are processed.' },
+        { cat: 'Payments', q: 'Do I pay at the pickup location?', a: 'No. Orders selected for self-pickup are fully paid before checkout. Simply present your name and Order ID when collecting your order.' },
+
+        { cat: 'Returns & Refunds', q: 'Can I return a product?', a: 'Yes. Eligible products may be returned according to our <a href="return-refund-policy.html">Return &amp; Refund Policy</a>.' },
+        { cat: 'Returns & Refunds', q: 'What products cannot be returned?', a: 'Certain items such as hygiene products, opened consumables and other specified products may not be eligible for return. See the full <a href="return-refund-policy.html">Return &amp; Refund Policy</a>.' },
+        { cat: 'Returns & Refunds', q: 'How do refunds work?', a: 'Once your return or refund request has been reviewed and approved, your refund will be processed using the original payment method whenever possible.' },
+        { cat: 'Returns & Refunds', q: 'How long does it take to receive my refund?', a: 'Approved refunds are generally issued within 10 working days after the review process has been completed.' },
+
+        { cat: 'Account & Security', q: 'Is my personal information safe?', a: 'Yes. We are committed to protecting your personal information in accordance with our <a href="privacy-policy.html">Privacy Policy</a>.' },
+        { cat: 'Account & Security', q: 'Why was my account suspended?', a: 'Accounts may be suspended if they violate our <a href="terms-conditions.html">Terms &amp; Conditions</a> or engage in fraudulent, abusive or illegal activities.' },
+
+        { cat: 'Products & Pricing', q: 'Why did a product price change?', a: 'Prices, discounts and promotions may change without prior notice.' },
+        { cat: 'Products & Pricing', q: 'Are product images accurate?', a: 'We do our best to ensure product images accurately represent the products being sold. However, colours, packaging or product appearance may vary slightly.' },
+        { cat: 'Products & Pricing', q: 'How do I know whether a product is in stock?', a: 'Current stock availability is displayed on the product page and updated regularly.' },
+
+        { cat: 'Selling Through Open Market', q: 'Can I sell my products on Open Market?', a: 'Yes. If you\'re interested in having your products featured on Open Market, please contact us through the <a href="support-center.html">Become a Member</a> option in the Support Center. Our team will review your request and determine whether your products meet our requirements.' },
+        { cat: 'Selling Through Open Market', q: 'Does Open Market allow anyone to become a seller?', a: 'No. Open Market carefully selects the products and businesses it works with to maintain quality and customer trust.' },
+
+        { cat: 'Affiliate Programme', q: 'How can I earn money with Open Market?', a: 'Our Affiliate Programme is currently under development. It will become available once it has been completed.' },
+
+        { cat: 'Customer Support', q: 'How do I contact Customer Support?', a: 'Visit the <a href="support-center.html">Support Center</a> within the app to submit your enquiry or support request.' },
+        { cat: 'Customer Support', q: 'Can I report poor customer service?', a: 'Yes. Excellent customer service is extremely important to us. If you\'ve experienced poor customer service, unprofessional behaviour or mishandling of your order, please report it through the <a href="support-center.html">Support Center</a> so we can investigate.' },
+        { cat: 'Customer Support', q: 'How do I report a bug?', a: 'Use the <a href="support-center.html">Report a Bug</a> option in the Support Center and provide as much information as possible.' },
+        { cat: 'Customer Support', q: 'Can I suggest a new feature?', a: 'Yes. We welcome feature suggestions through the <a href="support-center.html">Feature Request</a> section in the Support Center.' },
+
+        { cat: 'General', q: 'What products does Open Market sell?', a: 'Open Market offers products across a wide range of departments including Agriculture, Automotive, Baby &amp; Kids, Beauty &amp; Personal Care, Books &amp; Stationery, Cell Phones &amp; Accessories, Computers &amp; Office, Electronics, Fashion &amp; Accessories, Food, Beverages &amp; Groceries, Furniture &amp; Home, Health &amp; Wellness, Industrial &amp; Tools, Music, Pet Supplies, Sports &amp; Outdoors, and Toys &amp; Games. Browse them all in <a href="categories.html">Categories</a>.' },
+        { cat: 'General', q: 'Does Open Market sell services?', a: 'No. Open Market currently sells physical products only.' },
+        { cat: 'General', q: 'Do you sell prohibited products?', a: 'No. Open Market does not sell weapons, ammunition, tobacco products, cigarettes, vapes, shisha, illegal drugs, counterfeit goods, or other prohibited products.' },
+        { cat: 'General', q: 'Can I recommend a product you\'d like to stock?', a: 'Yes. We welcome product suggestions from our customers and may consider adding them to our catalogue.' },
+        { cat: 'General', q: 'How often are new products added?', a: 'We regularly expand our catalogue by adding carefully selected products from trusted suppliers and retail partners.' },
+        { cat: 'General', q: 'Why can\'t I find a product I purchased before?', a: 'Products may become unavailable because they have sold out, been discontinued or replaced with newer alternatives.' },
+        { cat: 'General', q: 'Will Open Market expand to more delivery locations?', a: 'Yes. As we continue to grow, we plan to expand our delivery network to reach more communities across Ghana.' },
+        { cat: 'General', q: 'Why do I have to create an account before shopping?', a: 'Your account helps us securely process your orders, manage deliveries, provide customer support, maintain your order history and improve your shopping experience.' },
+    ];
+
+    function renderFaqList() {
+        const query = document.getElementById('faq-search-input').value.trim().toLowerCase();
+        const container = document.getElementById('faq-container');
+        const filtered = query ? FAQ_DATA.filter(f => f.q.toLowerCase().includes(query) || f.a.toLowerCase().includes(query)) : FAQ_DATA;
+
+        if (filtered.length === 0) {
+            container.innerHTML = `<p style="text-align:center;font-size:12.5px;color:var(--text-muted);padding:30px 0;">No FAQs match "${query}".</p>`;
+            return;
+        }
+
+        const categories = [];
+        filtered.forEach(f => { if (!categories.includes(f.cat)) categories.push(f.cat); });
+
+        container.innerHTML = categories.map(cat => `
+            <div class="section-title" style="margin-top:20px;">${cat}</div>
+            <div class="faq-list">
+                ${filtered.filter(f => f.cat === cat).map(f => `
+                    <div class="faq-item">
+                        <div class="faq-question"><span>${f.q}</span><i class="ph ph-caret-down"></i></div>
+                        <div class="faq-answer"><div class="faq-answer-inner">${f.a}</div></div>
+                    </div>
+                `).join('')}
+            </div>
+        `).join('');
+
+        container.querySelectorAll('.faq-item').forEach(item => {
+            item.querySelector('.faq-question').addEventListener('click', () => {
+                const wasOpen = item.classList.contains('open');
+                container.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+                if (!wasOpen) item.classList.add('open');
+            });
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', renderFaqList);
+
+    document.querySelectorAll('.contact-item[data-contact]').forEach(item => {
+        item.addEventListener('click', async () => {
+            const type = item.getAttribute('data-contact');
+            if (type === 'email') {
+                await OpenAPI.showAlert('Reach us any time at support@openmarket.com.gh — we typically reply within one business day.', { title: 'Email Support' });
+            } else if (type === 'phone') {
+                await OpenAPI.showAlert('Call +233 302 000 000, Monday–Saturday, 8am–6pm.', { title: 'Call Us' });
+            } else {
+                await OpenAPI.showAlert('Live chat support is coming soon.', { title: 'Live Chat' });
+            }
+        });
+    });
+</script>
+</body>
+</html>
