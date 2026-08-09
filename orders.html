@@ -1,6 +1,154 @@
 <!DOCTYPE html>
 <html lang="en">
+<head><!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open Market Admin | Orders</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        /* Lets same-origin page navigations cross-fade natively instead of
+           hard-cutting/flashing white — no JS routing needed, still real
+           separate .html files under the hood. Chrome/Edge support this
+           today; browsers that don't just fall back to a normal navigation
+           (no error, just no animation), and the keyframe fade-in below
+           gives those browsers a softer landing too. */
+        @view-transition {
+            navigation: auto;
+        }
+
+        :root {
+            --sidebar-w: 264px;
+            --purple-top: #7C3AED;
+            --purple-bottom: #500e8c;
+            --purple-active: #6D28D9;
+            --purple-glow: rgba(109, 40, 217, 0.35);
+            --sidebar-text: rgba(255, 255, 255, 0.82);
+            --sidebar-text-muted: rgba(255, 255, 255, 0.55);
+            --sidebar-hover-bg: rgba(255, 255, 255, 0.08);
+            --sidebar-divider: rgba(255, 255, 255, 0.14);
+            --bg-page: #f7f7fb;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        html { scrollbar-gutter: stable; }
+
+        * { scrollbar-width: thin; scrollbar-color: var(--purple-bottom) transparent; }
+        *::-webkit-scrollbar { width: 6px; height: 6px; }
+        *::-webkit-scrollbar-track { background: transparent; }
+        *::-webkit-scrollbar-thumb { background-color: var(--purple-bottom); border-radius: 10px; }
+
+        body {
+            display: flex; min-height: 100vh; background: var(--bg-page); font-family: 'Inter', sans-serif;
+            animation: pageFadeIn 0.28s ease;
+        }
+        @keyframes pageFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            body { animation: none; }
+        }
+
+        /* ---------------- Sidebar ---------------- */
+        .sidebar {
+            width: var(--sidebar-w); flex-shrink: 0; min-height: 100vh;
+            background: linear-gradient(180deg, var(--purple-top) 0%, var(--purple-bottom) 100%);
+            display: flex; flex-direction: column;
+            padding: 28px 20px 20px;
+            position: sticky; top: 0; align-self: flex-start;
+            /* Identical across every page, so treat it as a persistent
+               element during a view transition rather than cross-fading it
+               too — only the content area should visibly transition. */
+            view-transition-name: sidebar;
+        }
+
+        .sidebar-logo { display: flex; align-items: center; gap: 10px; padding: 0 6px; margin-bottom: 32px; }
+        .sidebar-logo img { height: 30px; width: auto; object-fit: contain; }
+
+        .nav-section { display: flex; flex-direction: column; gap: 4px; }
+        .nav-item {
+            display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 12px;
+            color: var(--sidebar-text); text-decoration: none; font-size: 14px; font-weight: 500;
+            transition: background 0.15s ease, color 0.15s ease;
+        }
+        .nav-item i { font-size: 18px; flex-shrink: 0; }
+        .nav-item:hover { background: var(--sidebar-hover-bg); color: #fff; }
+        .nav-item.active {
+            background: #fff;
+            color: var(--purple-bottom); font-weight: 700;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+        }
+
+        .nav-divider { height: 1px; background: var(--sidebar-divider); margin: 16px 6px; }
+
+        .sidebar-spacer { flex: 1; }
+
+        .sidebar-profile {
+            display: flex; align-items: center; gap: 10px; padding: 12px 10px 4px;
+            border-top: 1px solid var(--sidebar-divider); margin-top: 12px; cursor: pointer;
+        }
+        .profile-avatar {
+            width: 38px; height: 38px; border-radius: 50%; background: var(--purple-active);
+            color: #fff; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .profile-info { flex: 1; min-width: 0; }
+        .profile-name { font-size: 13.5px; font-weight: 700; color: #fff; line-height: 1.3; }
+        .profile-role { font-size: 11.5px; color: var(--sidebar-text-muted); line-height: 1.3; }
+        .profile-chevron { color: var(--sidebar-text-muted); font-size: 14px; flex-shrink: 0; }
+
+        /* ---------------- Content area ---------------- */
+        .content-area { flex: 1; min-width: 0; view-transition-name: page-content; }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <img src="icons and images/Open Market White Logo.png" alt="Open Market">
+        </div>
+
+        <nav class="nav-section">
+            <a href="dashboard.html" class="nav-item"><i class="ph ph-squares-four"></i> Dashboard</a>
+            <a href="add-product.html" class="nav-item"><i class="ph ph-plus-square"></i> Add Product</a>
+            <a href="products.html" class="nav-item"><i class="ph ph-cube"></i> Products</a>
+            <a href="content.html" class="nav-item"><i class="ph ph-newspaper"></i> Content</a>
+            <a href="orders.html" class="nav-item active"><i class="ph ph-shopping-bag"></i> Orders</a>
+            <a href="customers.html" class="nav-item"><i class="ph ph-user-circle"></i> Customers</a>
+            <a href="reports.html" class="nav-item"><i class="ph ph-chart-bar"></i> Reports</a>
+            <a href="marketing.html" class="nav-item"><i class="ph ph-megaphone"></i> Marketing</a>
+            <a href="support.html" class="nav-item"><i class="ph ph-headset"></i> Support</a>
+            <a href="settings.html" class="nav-item"><i class="ph ph-gear"></i> Settings</a>
+        </nav>
+
+        <div class="nav-divider"></div>
+
+        <nav class="nav-section">
+            <a href="help-center.html" class="nav-item"><i class="ph ph-question"></i> Help Center</a>
+            <a href="logout.html" class="nav-item"><i class="ph ph-sign-out"></i> Logout</a>
+        </nav>
+
+        <div class="sidebar-spacer"></div>
+
+        <div class="sidebar-profile">
+            <div class="profile-avatar">JR</div>
+            <div class="profile-info">
+                <div class="profile-name">Jessica R.</div>
+                <div class="profile-role">Administrator</div>
+            </div>
+            <i class="ph ph-caret-down profile-chevron"></i>
+        </div>
+    </aside>
+
+    <main class="content-area">
+        <!-- Orders page content goes here — built out next. -->
+    </main>
+
+</body>
+</html>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Open Market | My Orders</title>
